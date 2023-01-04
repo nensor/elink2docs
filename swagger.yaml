@@ -1,0 +1,2269 @@
+openapi: 3.0.0
+info:
+  title: ELINK2 API
+  version: 2.0.0
+  description: ELINK version 2 record and media API.
+  contact:
+    email: ensorn@osti.gov
+    name: Neal Ensor
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: records
+    description: Interact with record metadata in JSON.
+  - name: archive
+    description: Interact with previous revisions of record metadata.
+  - name: record media
+    description: Interact with media sets by associated record OSTI ID.
+  - name: media file
+    description: Interact directly with individual media files based on unique ID.
+paths:
+  '/records':
+    get:
+      summary: >-
+        Search OSTI docuemnts based on passed in criteria values and
+        filters.
+      description: Search for records at OSTI based on indicated parameters.
+      tags:
+        - records
+      parameters:
+        - in: query
+          name: all
+          schema:
+            type: string
+          description: Search within any available search field for the requested string
+        - in: query
+          name: title
+          schema:
+            type: string
+          description: Search within the title of a record
+        - in: query
+          name: authors
+          schema:
+            type: string
+          description: Search within author names and affiliations
+        - in: query
+          name: contributors
+          schema:
+            type: string
+          description: Search within contributor names and affiliations
+        - in: query
+          name: organizations
+          schema:
+            type: string
+          description: Search within organizations on a record
+        - in: query
+          name: identifiers
+          schema:
+            type: string
+          description: Search within record identifying numbers
+        - in: query
+          name: doi
+          schema:
+            type: string
+          description: Search DOI values
+        - in: query
+          name: description
+          schema:
+            type: string
+          description: Search within description/abstract of records
+        - in: query
+          name: language
+          schema:
+            type: string
+          description: Filter by main language of the record
+        - in: query
+          name: keywords
+          schema:
+            type: string
+          description: Search within record keywords
+        - in: query
+          name: subject_code
+          schema:
+            type: string
+          description: Search within subject categories
+        - in: query
+          name: sponsor_organizations
+          schema:
+            type: string
+          description: Search within sponsor organization values
+        - in: query
+          name: contributing_organizations
+          schema:
+            type: string
+          description: Search within contributing organization values
+        - in: query
+          name: doe_contract_numbers
+          schema:
+            type: string
+          description: Search within DOE contract number values
+        - in: query
+          name: nondoe_contract_numbers
+          schema:
+            type: string
+          description: Search within non-DOE contract or award number values
+        - in: query
+          name: publication_date_from
+          schema:
+            type: string
+          description: Search records published after the indicated date (MM/DD/YYYY)
+        - in: query
+          name: publication_date_to
+          schema:
+            type: string
+          description: Search records published before the indicated date (MM/DD/YYYY)
+        - in: query
+          name: date_first_submitted_from
+          description: Search results first submitted after the indicated date (MM/DD/YYYY)
+          schema:
+            type: string
+        - in: query
+          name: date_first_submitted_to
+          description: >-
+            Search results first submitted before the indicated date
+            (MM/DD/YYYY)
+          schema:
+            type: string
+        - in: query
+          name: date_last_submitted_from
+          description: Search results last submitted after the indicated date (MM/DD/YYYY)
+          schema:
+            type: string
+        - in: query
+          name: date_last_submitted_to
+          description: Search results last submitted before the indicated date (MM/DD/YYYY)
+          schema:
+            type: string
+        - in: query
+          name: report_numbers
+          schema:
+            type: string
+          description: Search within report numbers
+        - in: query
+          name: related_identifiers
+          schema:
+            type: string
+          description: Search related identifier information
+        - in: query
+          name: workflow_status
+          schema:
+            type: string
+            enum:
+              - R
+              - SA
+              - SR
+              - SO
+          description: Filter by workflow status of record
+        - in: query
+          name: site_ownership_code
+          schema:
+            type: string
+          description: Filter based on site ownership code value
+        - in: query
+          name: hidden_flag
+          schema:
+            type: boolean
+            enum:
+              - true
+              - false
+          description: Filter based on whether record is hidden or not
+        - in: query
+          name: access_limitations
+          schema:
+            type: string
+          description: Filter based on access limitation values of a record
+        - in: query
+          name: product_type
+          schema:
+            type: string
+          description: Filter by product type of record
+        - in: query
+          name: start
+          schema:
+            type: integer
+          description: Starting offset (from 0) of record set
+        - in: query
+          name: rows
+          schema:
+            type: integer
+          description: Number of rows to retrieve at a time (default 25)
+      responses:
+        '200':
+          description: Successful query response.
+          headers:
+            x-total-count:
+              schema:
+                type: integer
+              description: Total number of records matching this query.
+            link:
+              schema:
+                type: string
+              description: If query results require pagination, this header value will contain the various links to first, last, next, and previous URLs to obtain additional results.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Record'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 401
+                    detail: No user credentials supplied.
+        '403':
+          description: Access to indicated record is forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 403
+                    detail: Access is denied.
+        '404':
+          description: Record is not on file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 404
+                    detail: Record is not on file.
+        '500':
+          description: A server error occurred during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 500
+                    detail: Internal server error.
+    post:
+      summary: Submit new metadata to OSTI.
+      description: Create a new metadata record or report with OSTI.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Record'
+            example:
+              title: Electron microscope data for photons
+              site_ownership_code: LLNL
+              product_type: TR
+              access_limitations:
+                - UNL
+              publication_date: 02/18/2019
+              identifiers:
+                - type: RN
+                  values:
+                    - RN/2019-238942
+                - type: CN_DOE
+                  values:
+                    - AG03-GX-2019238943
+              persons:
+                - first_name: Arthur
+                  last_name: Mann
+                  type: AUTHOR
+                - first_name: Joe
+                  middle_name: Q.
+                  last_name: Public
+                  type: CONTRIB
+                  contributor_type: Editor
+              organizations:
+                - type: ORIG_RES
+                  name: Oak Ridge National Laboratory
+                  ror: 01qz5mb56
+                  country: US
+      responses:
+        '201':
+          description: New resource data created, JSON of the new record contained in
+            the response.  The Location header will also indicate the URI to GET the resource
+            with its unique OSTI ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Record'
+              example:
+                osti_id: 78923
+                title: Electron microscope data for photons
+                workflow_status: SA
+                site_ownership_code: LLNL
+                product_type: TR
+                access_limitation:
+                  - UNL
+                publication_date: 02/18/2019
+                identifiers:
+                  - type: RN
+                    values:
+                      - RN/2019-238942
+                  - type: CN_DOE
+                    values:
+                      - AG03-GX-2019238943
+                persons:
+                  - first_name: Arthur
+                    last_name: Mann
+                    person_type: AUTHOR
+                  - first_name: Joe
+                    middle_name: Q.
+                    last_name: Public
+                    person_type: CONTRIB
+                    contributor_type: Editor
+                organizations:
+                  - type: ORIG_RES
+                    name: Oak Ridge National Laboratory
+                    ror: 01qz5mb56
+                    country: US
+                    
+        '400':
+          description: Bad request, JSON cannot be interpreted, or validation issues.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorSet"
+              example:
+                errors:
+                  - status: 400
+                    detail: Contract number missing.
+                    source:
+                      pointer: "/identifiers"
+                  - status: 400
+                    detail: Name is required.
+                    source:
+                      pointer: "/persons/3/first_name"
+                  
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 401
+                    detail: No user credentials supplied.
+        '403':
+          description: Access to indicated record is forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 403
+                    detail: Access is denied.
+        '404':
+          description: Record is not on file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 404
+                    detail: Record is not on file.
+        '500':
+          description: A server error occurred during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 500
+                    detail: Internal server error.
+      tags:
+        - records
+        
+  '/records/{id}':
+    summary: Interact with existing records by OSTI ID.
+    put:
+      summary: Update existing record information.
+      description: Update existing records at OSTI by unique OSTI ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Unique OSTI ID for record to update.
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Record'
+      responses:
+        '200':
+          description: Requested changes were made, updated JSON contains new record data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Record'
+        '400':
+          description: Bad request, JSON cannot be interpreted, or validation issues.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorSet"
+              example:
+                errors:
+                  - status: 400
+                    detail: Contract number missing.
+                    source:
+                      pointer: "/identifiers"
+                  - status: 400
+                    detail: Name is required.
+                    source:
+                      pointer: "/persons/3/first_name"
+                  
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 401
+                    detail: No user credentials supplied.
+        '403':
+          description: Access to indicated record is forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 403
+                    detail: Access is denied.
+        '404':
+          description: Record is not on file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 404
+                    detail: Record is not on file.
+        '500':
+          description: A server error occurred during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 500
+                    detail: Internal server error.
+      tags:
+        - records
+        
+    get:
+      summary: Retrieve metadata information for a particular record by OSTI ID.
+      description: Obtain the metadata JSON for a record at OSTI.
+      operationId: ''
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Unique OSTI ID value for the record to retrieve.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: JSON information containing metadata about the record in question.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Record'
+                  
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 401
+                    detail: No user credentials supplied.
+        '403':
+          description: Access to indicated record is forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 403
+                    detail: Access is denied.
+        '404':
+          description: Record is not on file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 404
+                    detail: Record is not on file.
+        '500':
+          description: A server error occurred during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 500
+                    detail: Internal server error.
+      tags:
+        - records
+    
+                
+  '/media/{id}':
+    summary: Interact with media associated with this OSTI ID, if any.
+    get:
+      tags:
+        - record media
+      description: Obtain JSON of media associated with OSTI ID.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: The OSTI ID of the record to obtain set information.
+          required: true
+      responses:
+        '200':
+          description: Information on all media sets associated with this OSTI ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaSet'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 401
+                    detail: No user credentials supplied.
+        '403':
+          description: Access to indicated record is forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 403
+                    detail: Access is denied.
+        '404':
+          description: Record is not on file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 404
+                    detail: Record is not on file.
+        '500':
+          description: A server error occurred during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 500
+                    detail: Internal server error.
+    post:
+      tags:
+        - record media
+      description: Associate new media with a given OSTI ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The OSTI ID of the record to associate a new MEDIA SET for that
+            record, becoming version 1 of that MEDIA SET.
+          schema:
+            type: integer
+            example: 89934
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  description: The URL link to the media or landing page describing the media
+                    related to this product.
+                  example: https://library.datasets.org/product/media/89934
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File content to associate with the metadata.
+      responses:
+        '200':
+          description: The operation was successful, new MEDIA SET was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaSet'
+              example:
+                media_id: 88345
+                media_version: 1
+                files:
+                  - media_file_id: 73485
+                    media_id: 99345
+                    media_type: O
+                    url: "newreport.pdf"
+                    mime_type: "application/pdf"
+                    file_size_bytes: 793453
+                    url_type: L
+                    media_status: NEW
+                    parent_file_id: 0
+        '400':
+          description: Bad request, media already exists.  Also indicated if file or URL content is a duplicate of already associated media for this record.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 400
+                    detail: Media already exists, use PUT to replace.
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 401
+                    detail: No user credentials supplied.
+        '403':
+          description: Access to indicated record is forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 403
+                    detail: Access is denied.
+        '404':
+          description: Record is not on file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 404
+                    detail: Record is not on file.
+        '500':
+          description: A server error occurred during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 500
+                    detail: Internal server error.
+    
+    delete:
+      tags:
+        - record media
+      description: Disassociate current media set from this record.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The OSTI ID of the record to remove media
+          schema:
+            type: integer
+            example: 77564
+      responses:
+        '204':
+          description: The operation was successful.  Media set should no
+            longer be associated with the OSTI ID.
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 401
+                    detail: No user credentials supplied.
+        '403':
+          description: Access to indicated record is forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 403
+                    detail: Access is denied.
+        '404':
+          description: Record is not on file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 404
+                    detail: Record is not on file.
+        '500':
+          description: A server error occurred during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 500
+                    detail: Internal server error.
+                
+  '/media/file/{id}':
+    summary: Interact with particular MEDIA FILES based on unique MEDIA FILE ID.
+    get:
+      tags:
+        - media file
+      description: Obtain content stream of a particular MEDIA FILE by its unique ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The MEDIA FILE ID of the file content desired.
+          schema:
+            type: integer
+            example: 99888
+      responses:
+        '200':
+          description: The content stream of the media file.  Content type will
+            vary according to the mime type of the requested media file.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 401
+                    detail: No user credentials supplied.
+        '403':
+          description: Access to indicated record is forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 403
+                    detail: Access is denied.
+        '404':
+          description: Record is not on file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 404
+                    detail: Record is not on file.
+        '500':
+          description: A server error occurred during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 500
+                    detail: Internal server error.
+  '/records/version/{id}/first':
+    get:
+      tags:
+        - archive
+      description: Locate the very first revision of a given OSTI ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The OSTI ID value
+          schema:
+            type: integer
+            example: 2732
+      responses:
+        '200':
+          description: JSON containing revision metadata is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 401
+                    detail: No user credentials supplied.
+        '403':
+          description: Access to indicated record is forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 403
+                    detail: Access is denied.
+        '404':
+          description: Record is not on file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 404
+                    detail: Record is not on file.
+        '500':
+          description: A server error occurred during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 500
+                    detail: Internal server error.
+  '/records/version/{id}/last':
+    get:
+      tags:
+        - archive
+      description: Locate the last or latest version of a given OSTI ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The OSTI ID value
+          schema:
+            type: integer
+            example: 2732
+      responses:
+        '200':
+          description: JSON containing revision metadata is returned.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 401
+                    detail: No user credentials supplied.
+        '403':
+          description: Access to indicated record is forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 403
+                    detail: Access is denied.
+        '404':
+          description: Record is not on file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 404
+                    detail: Record is not on file.
+        '500':
+          description: A server error occurred during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 500
+                    detail: Internal server error. 
+  '/records/version/{id}/before/{version}':
+    get:
+      tags:
+        - archive
+      description: Obtain the version of the indicated OSTI ID immediately prior to the indicated version, if it exists.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: the OSTI ID of the record to use
+          schema:
+            type: integer
+            example: 83432
+        - in: path
+          name: version
+          required: true
+          description: the version number to start from
+          schema:
+            type: integer
+            example: 338
+      responses:
+        '200':
+          description: JSON of the requested edit prior to the indicated version if such exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 401
+                    detail: No user credentials supplied.
+        '403':
+          description: Access to indicated record is forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 403
+                    detail: Access is denied.
+        '404':
+          description: Record is not on file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 404
+                    detail: Record is not on file.
+        '500':
+          description: A server error occurred during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 500
+                    detail: Internal server error.
+  '/records/version/{id}/after/{version}':
+    get:
+      tags:
+        - archive
+      description: Obtain the version of the indicated OSTI ID immediately after the indicated version, if it exists.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: the OSTI ID of the record to use
+          schema:
+            type: integer
+            example: 83432
+        - in: path
+          name: version
+          required: true
+          description: the version number to start from
+          schema:
+            type: integer
+            example: 338
+      responses:
+        '200':
+          description: JSON of the requested edit after the indicated version if such exists.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 401
+                    detail: No user credentials supplied.
+        '403':
+          description: Access to indicated record is forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 403
+                    detail: Access is denied.
+        '404':
+          description: Record is not on file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 404
+                    detail: Record is not on file.
+        '500':
+          description: A server error occurred during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 500
+                    detail: Internal server error.
+  '/records/version/{id}/at/{date}':
+    get:
+      tags:
+        - archive
+      description: Access revision of metadata by OSTI ID that was active at the given date-time provided.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: OSTI ID of requested metadata
+          schema:
+            type: integer
+            example: 487211
+        - in: path
+          name: date
+          required: true
+          description: Timestamp representing the date and time when revision was active
+          schema:
+            type: string
+            format: date-time
+            example: '2022-02-01T172300Z'
+      responses:
+        '200':
+          description: JSON containing the requested revision active at that point in time for the OSTI ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Archive'
+        '401':
+          description: Authentication required.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 401
+                    detail: No user credentials supplied.
+        '403':
+          description: Access to indicated record is forbidden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 403
+                    detail: Access is denied.
+        '404':
+          description: Record is not on file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 404
+                    detail: Record is not on file.
+        '500':
+          description: A server error occurred during the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSet'
+              example:
+                errors:
+                  - status: 500
+                    detail: Internal server error.
+      
+components:
+  schemas:
+    OrganizationType:
+      type: string
+      description: |
+        Indicates type of organization:
+        | code | description |
+        | -- | -- |
+        |AUTHOR|Authors|
+        |COLLAB|Collaborator Organizations|
+        |CONTRIB|Contributing Organizations|
+        |FUNDER|Funders with Award DOIs|
+        |ORIG_RES|Originating Research Organizations|
+        |SPONSOR|Sponsoring Organizations|
+      enum:
+        - AUTHOR
+        - CONTRIB
+        - COLLAB
+        - FUNDER
+        - ORIG_RES
+        - SPONSOR
+
+    PersonType:
+      type: string
+      description: |
+        Indicates type of person:
+        | code | description |
+        | -- | -- |
+        |AUTHOR|Authors|
+        |CONTACT|Contact Information|
+        |CONTRIB|Contributor|
+        |RELEASE|Releasing Official|
+        |SBIZ_BO|SBIR/STTR Business Official|
+        |SBIZ_PI|SBIR/STTR Principal Investigator|
+      enum:
+        - AUTHOR
+        - RELEASE
+        - CONTACT
+        - CONTRIB
+        - SBIZ_PI
+        - SBIZ_BO
+    ContributorType:
+      type: string
+      description: |
+        Describes the type of contribution to the work.
+        |code|description|
+        |----|-----------|
+        |ContactPerson|Person with knowledge of how to access, troubleshoot, or otherwise field issues related to the resource.|
+        |DataCollector|Person/institution responsible for finding or gathering data under the guidelines of the author(s) or Principal Investigator.|
+        |DataCurator|Person tasked with reviewing, enhancing, cleaning, or standardizing metadata and the associated data submitted.|
+        |DataManager|Person (or organisation with a staff of data managers, such as a data centre) responsible for maintaining the finished resource.|
+        |Distributor|Institution tasked with responsibility to generate/disseminate copies of the resource in either electronic or print form.|
+        |Editor|A person who oversees the details related to the publication format of the resource.|
+        |HostingInstitution|The organisation allowing the resource to be available on the internet.|
+        |Producer|Typically a person or organisation responsible for the artistry and form of a media product.|
+        |ProjectLeader|Person officially designated as head of project team instrumental in the work necessary to development of the resource.|
+        |ProjectManager|Person officially designated as manager of a project. Project may consist of one or many project teams and sub-teams.|
+        |ProjectMember|Person on the membership list of a designated project/project team.|
+        |RegistrationAgency|Institution officially appointed by a Registration Authority to handle specific tasks within a defined area of responsibility.|
+        |RegistrationAuthority|A standards-setting body from which Registration Agencies obtain official recognition and guidance.|
+        |RelatedPerson|Person with no specifically defined role in the development of the resource, but who is someone the author wishes to recognize.|
+        |Researcher|A person involved in analyzing data or the results of an experiment or formal study.|
+        |ResearchGroup|Refers to a group of individuals with a lab, department, or division; the group has a particular, defined focus of activity.|
+        |RightsHolder|Person or institution owning or managing property rights, including intellectual property rights over the resource.|
+        |Sponsor|Person or organisation that issued a contract or under the auspices of which a work has been performed.|
+        |Supervisor|Designated administrator over one or more groups working to produce a resource or over one or more steps of development process.|
+        |WorkPackageLeader|A Work Package is a recognized data product, not all of which is included in publication.|
+        |Other|Any person or institution making a significant contribution, but whose contribution does not "fit".|
+      enum:
+        - ContactPerson
+        - DataCollector
+        - DataCurator
+        - DataManager
+        - Distributor
+        - Editor
+        - HostingInstitution
+        - Producer
+        - ProjectLeader
+        - ProjectManager
+        - ProjectMember
+        - RegistrationAgency
+        - RegistrationAuthority
+        - RelatedPerson
+        - Researcher
+        - ResearchGroup
+        - RightsHolder
+        - Sponsor
+        - Supervisor
+        - WorkPackageLeader
+        - Other
+    RelationType:
+      type: string
+      description: |
+        Indicates the relationship between this identifier and the source record.
+        |code|description|
+        |----|-----------|
+        |Cites|indicates that A includes B in a citation|
+        |Compiles|indicates B is the result of a compile or creation event using A|
+        |Continues|indicates A is a continuation of the work B|
+        |Describes|indicates A describes B|
+        |Documents|indicates A is documentation about/B|
+        |HasMetadata|indicates resource A has additional metadata B|
+        |HasPart|indicates A includes the part B|
+        |HasVersion|indicates A has a version of B|
+        |IsCitedBy|indicates that B includes A in a citation|
+        |IsCompiledBy|indicates B is used to compile or create A|
+        |IsContinuedBy|indicates A is continued by the work B|
+        |IsDerivedFrom|indicates B is a source upon which A is based|
+        |IsDescribedBy|Indicates A is described by B|
+        |IsDocumentedBy|indicates B is documentation about/explaining A|
+        |IsIdenticalTo|indicates that A is identical to B, for use when there is a need to register two separate instances of the same resource|
+        |IsMetadataFor|indicates additional metadata A for a resource B|
+        |IsNewVersionOf|indicates A is a new edition of B, where the new edition has been modified or updated|
+        |IsObsoletedBy|Indicates A is replaced by B|
+        |IsOriginalFormOf|indicates A is the original form of B|
+        |IsPartOf|indicates A is a portion of B; may be used for elements of a series|
+        |IsPreviousVersionOf|indicates A is a previous edition of B|
+        |IsReferencedBy|indicates A is used as a source of information by B|
+        |IsRequiredBy|inidcates A is required by B|
+        |IsReviewedBy|indicates that A is reviewed by B|
+        |IsSourceOf|indicates A is a source upon which B is based|
+        |IsSupplementTo|indicates that A is a supplement to B|
+        |IsSupplementedBy|indicates that B is a supplement to A|
+        |IsVariantFormOf|indicates A is a variant or different form of B, e.g. calculated or calibrated form or different packaging|
+        |IsVersionOf|indicates A is a version of B|
+        |Obsoletes|Indicates A replaces B|
+        |References|indicates B is used as a source of information for A|
+        |Requires|indicates A requires B|
+        |Reviews|indicates that A is a review of B|
+
+      enum:
+        - IsDescribedBy
+        - Describes
+        - HasVersion
+        - IsVersionOf
+        - IsRequiredBy
+        - Requires
+        - Obsoletes
+        - IsObsoletedBy
+        - IsCitedBy
+        - Cites
+        - IsSupplementTo
+        - IsSupplementedBy
+        - IsContinuedBy
+        - Continues
+        - HasMetadata
+        - IsMetadataFor
+        - IsNewVersionOf
+        - IsPreviousVersionOf
+        - IsPartOf
+        - HasPart
+        - IsReferencedBy
+        - References
+        - IsDocumentedBy
+        - Documents
+        - IsCompiledBy
+        - Compiles
+        - IsVariantFormOf
+        - IsOriginalFormOf
+        - IsIdenticalTo
+        - IsReviewedBy
+        - Reviews
+        - IsDerivedFrom
+        - IsSourceOf
+
+    IdentifierType:
+      type: string
+      description: |
+        Describe the type of identifier:
+        |code | description|
+        |-------|-------|
+        |AUTH_REV |Authorization Revision Number|
+        |CN_DOE |DOE Contract Number|
+        |CN_NONDOE |Non DOE Contract Number|
+        |CODEN |CODEN|
+        |DOE_DOCKET | DOE Docket Number|
+        |EDB |EDB Number|
+        |ETDE_RN |ETDE Reference Number|
+        |INIS_RN |INIS Reference Number|
+        |ISSN |ISSN|
+        |LEGACY |Legacy Identifier|
+        |NSA |NSA Number|
+        |OPN_ACC |Opennet Accession Number|
+        |OTHER_ID |Other Identifying Number|
+        |PATENT |Patent Number|
+        |PROJ_ID |Research and Development Project Identifier|
+        |PROP_REV |Proposal Revision Number|
+        |REF |Reference Numbers|
+        |REL_TRN |Related ETDE Technical Reference Number.|
+        |RN |Report Number|
+        |TRN |ETDE Technical Report Number|
+        |TVI |Tape Volume Issue Number|
+        |USER_VER |User Entered Version Number|
+        |WORK_AUTH |Work Authorization Number|
+        |WORK_PROP |Work Proposal Number|
+      enum:
+        - AUTH_REV
+        - CN_DOE
+        - CN_NONDOE
+        - CODEN
+        - DOE_DOCKET
+        - EDB
+        - ETDE_RN
+        - INIS_RN
+        - ISSN
+        - LEGACY
+        - NSA
+        - OPN_ACC
+        - OTHER_ID
+        - PATENT
+        - PROJ_ID
+        - PROP_REV
+        - REF
+        - REL_TRN
+        - RN
+        - TRN
+        - TVI
+        - USER_VER
+        - WORK_AUTH
+        - WORK_PROP
+
+    Identifier:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/IdentifierType'
+        values:
+          type: array
+          description: Array of identifier values for this type
+          items:
+            type: string
+    OrganizationIdentifier:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/IdentifierType'
+        values:
+          type: array
+          description: Array of identifier values for this type
+          items:
+            type: string
+
+    Organization:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/OrganizationType'
+        name:
+          type: string
+          description: Name of the organization
+          example: Quantum Physics of America, Inc.
+        organization_id:
+          type: integer
+          description: Unique identifying number of this organization
+        country:
+          type: string
+          description: Country code indicating the base of operations for this organization
+          example: US
+        ror:
+          type: string
+          description: Research Organization Registry identifier for this organization
+          example: 8jg9902x
+        funder_id:
+          type: string
+          description: Funding identifier for this organization
+        contributor_type:
+          $ref: '#/components/schemas/ContributorType'
+        identifiers:
+          type: array
+          description: List of any identifiers for this Organization
+          items:
+            $ref: '#/components/schemas/OrganizationIdentifier'
+
+    RelatedIdentifier:
+      type: object
+      description: Identifies other resources that are related in some manner to this record
+      properties:
+        type:
+          type: string
+          enum: 
+            - DOI
+            - URL
+            - URN
+            - UPC
+            - PURL
+            - PMID
+            - LSID
+            - LISSN
+            - ISTC
+            - ISSN
+            - ISGN
+            - ISBN
+            - Handle
+            - EISSN
+            - EAN13
+            - bibcode
+            - arXiv
+            - ARK
+          description: |
+            Identify the type of this related identifier
+            |Code |Description|
+            |----|-----------|
+            |URL|Uniform Resource Locator|
+            |URN|Uniform Resource Name|
+            |UPC|Universal Product Code/Barcode|
+            |PURL|Persistent Uniform Resource Locator|
+            |PMID|PubMed ID|
+            |LSID|Life Science Identifier|
+            |LISSN|Linking ISSN|
+            |ISTC|International Standard Text Code|
+            |ISSN| International Standard Serial Number|
+            |ISGN|International Geo Sample Number |
+            |ISBN|International Standard Book Number|
+            |Handle|Handle ID (Corporation for National Research Initiatives)|
+            |EISSN|Electronic International Standard Serial Number|
+            |EAN13|European Article Number (renamed International Article Number) |
+            |DOI|DOI|
+            |bibcode|Astrophysics Data System bibliographic codes|
+            |arXiv|arXiv identifier|
+            |ARK|Archival Resource Key|
+
+          example: DOI
+        relation:
+          $ref: '#/components/schemas/RelationType'
+        value:
+          type: string
+          description: The value of the identifier
+          example: 10.11578/2020/28383
+
+    AffiliationType:
+      type: object
+      description: Information about affiliations for a person.
+      properties:
+        name:
+          type: string
+          description: Name of laboratory, university, etc. person is affiliated with
+          example: ACME Laboratories, LLC
+        country:
+          type: string
+          description: Country code for location on this affiliation
+          example: US
+        organization_id:
+          type: integer
+          description: ID reference used for OSTI identification of affiliation
+        ror:
+          type: string
+          description: Research Organization Registry identifier for affiliation if any. 
+            (see https://ror.org/).
+          example: 0r273g
+        funder_id:
+          type: integer
+          description: ID reference for funder affiliations used by OSTI 
+
+    Person:
+      type: object
+      description: Information about a particular person involved in the production or maintenance of this record
+      properties:
+        type:
+          $ref: '#/components/schemas/PersonType'
+        first_name:
+          type: string
+          description: First (or "Given") name of the person
+          example: Sample
+        middle_name:
+          type: string
+          description: Middle name or initial of the person
+          example: Q.
+        last_name:
+          type: string
+          description: Last (or "Family") name of this person
+          example: Person
+        email:
+          type: array
+          description: List of any email address(es) associated with this person
+          items:
+            type: string
+          example:
+            - persons@sample.org
+        orcid:
+          type: string
+          description: ORCID (https://orcid.org/) value for this person
+          example: 0000-0001-2345-6789
+        phone:
+          type: string
+          description: Contact phone number for this person
+          example: (555) 860-9923
+        osti_user_id:
+          type: integer
+          description: OSTI-assigned identifier for this person, if any
+        contributor_type:
+          $ref: '#/components/schemas/ContributorType'
+        affiliations:
+          type: array
+          description: List of any affiliations for this person
+          items:
+            $ref: '#/components/schemas/AffiliationType'
+
+    Record:
+      type: object
+      properties:
+        osti_id:
+          type: integer
+          description: Unique identifier for OSTI record, only required for updates.
+          example: 9999
+        biblio_version:
+          type: integer
+          description: Unique version or edit number to represent this record.
+          example: 1
+        workflow_status:
+          type: string
+          enum: [R, SR, SO]
+          example: SO
+          description: |
+            Desired status for this record at time of initial submission to OSTI.
+            | code | description |
+            | -- | -- |
+            | SR | Submit to Releasing Official, additional required validations, must be approved to release |
+            | SO | Submit to OSTI, releasing official approval level. At this level, record processing and release begins |
+            | R | Released, record has been successfully processed |
+        access_limitations:
+          type: array
+          description: |
+            Access limitation codes to describe the distribution rules and limitations for this work.
+
+            | code | description |
+            | -- | -- |
+            | UNL | Unlimited announcement |
+            | OPN | OpenNET (requires OpenNET attributes) |
+            | CPY | Copyright restricted material |
+            | OUO | Official use only |
+            | ECI | Export-controlled information |
+            | SSI | Security sensitive information |
+            | PROT | Protected data (e.g., CRADA, additional information required) |
+            | PAT | Patented information |
+            | LRD | Limited Rights Data |
+            | PDOUO | Program-determined OUO |
+            | NNPI | Naval Navigation Propulsion Info |
+            | INTL | International data |
+            
+            Most access limitations beyond UNL will require additional information for
+            definitions in other required fields. Note that only certain combinations
+            of access limitations are valid.
+
+          example: 
+            - UNL
+            - OPN
+          items:
+            type: string
+            enum: 
+              - UNL
+              - OPN
+              - CPY
+              - OUO
+              - PROT
+              - PDOUO
+              - ECI
+              - PDSH
+              - USO
+              - LRD
+              - UCNI
+              - NAT
+              - NNPI
+              - INTL
+              - PROP
+              - PAT
+              - OTHR
+        access_limitation_other:
+          type: string
+          description: Additional information about access limitation for this record, if needed
+        added_by_user_id:
+          type: integer
+          description: ELINK user ID that initially entered the record.
+          example: 28931
+        announcement_codes:
+          type: array
+          description: List of announcement codes for this record
+          example:
+            - EDB
+            - INIS
+          items:
+            type: string
+        availability:
+          type: string
+          description: Describes record's availibility information
+          example: Also available at https://sample.com/document/report.pdf
+        book_edition:
+          type: string
+          description: For Book submissions, the edition number or name
+        book_volume:
+          type: string
+          description: For Book submissions, the volume number of the work
+        collection_type:
+          type: string
+          description: Indicates the OSTI collection type of this record.
+          example: LAB_API
+        conference_information:
+          type: string
+          description: Describes the conference pertaining to this record, if any
+          example: ApacheCON 2019 discussion panel #18
+        conference_type:
+          type: string
+          description: |
+            Code representing the type of conference-related work of this record. Only applicable to CO type submissions.
+            
+            | code | description |
+            | -- | -- |
+            | C | Paper/Proceeding (Legacy Code) |
+            | P | Proceedings |
+            | A | Paper |
+            | R | Presentation |
+            | O | Poster |
+        contract_award_date:
+          type: string
+          description: Date contract for this record was awarded
+          example: 02/19/2012
+        country_publication_code:
+          type: string
+          description: Country of publication for this record
+          example: US
+        dataset_content_types:
+          type: array
+          description: |
+            List of content types pertaining to this record if a data set:
+
+            | code | description |
+            | -- | -- |
+            | I | Instrument |
+            | ND | Numeric Data |
+            | IP | Images or Photos |
+            | IM | Interactive Data Map |
+            | AS | Animation/Simulation |
+            | GD | Genome/Genetic Data |
+            | FP | Figures/Plots |
+            | MM | Multimedia |
+            | SM | Specialized Mix |
+          example:
+            - ND
+            - AS
+          items:
+            type: string
+        date_added:
+          type: string
+          format: date-time
+          description: Date record first entered the OSTI system. Value internally maintaned by ELINK.
+          example: 01/21/2018
+        date_updated:
+          type: string
+          format: date-time
+          description: Date record was last updated at OSTI.  Maintained internally by ELINK.
+          example: 04/02/2020
+        date_released_first:
+          type: string
+          format: date-time
+          description: Date of first release of this record by OSTI.  Maintained internally by ELINK.
+          example: 03/06/2009
+        date_released_last:
+          type: string
+          format: date-time
+          description: Most recent date of release of this record by OSTI.  Maintained internally by ELINK.
+          example: 05/06/2017
+        date_submitted_first:
+          type: string
+          format: date-time
+          description: Date record was first submitted to OSTI for publication. Maintained internally by ELINK.
+          example: 04/04/2019
+        date_submitted_last:
+          type: string
+          format: date-time
+          description: Most recent date record information was submitted to OSTI.  Maintained internally by ELINK.
+          example: 05/04/2018
+        description:
+          type: string
+          description: Description or abstract for this record
+          example: Information about a particular record, report, or other document, or executive summary or abstract of same.
+        descriptors:
+          type: array
+          description: List of descriptor codes for this record
+          example:
+            - ATMOSPHERE
+            - ELECTRONS
+          items:
+            type: string
+        doe_funded_flag:
+          type: string
+          description: Indicates if the record is primarily DOE-funded
+          example: Y
+        doe_supported_flag:
+          type: string
+          description: Indicates if DOE support present or acknowledged on this record.
+        doi:
+          type: string
+          description: The DOI for this record, if any
+          example: 10.5072/2020/238479ax
+        doi_infix:
+          type: string
+          description: Any customized infix value for the DOI used when generating a DOI reference
+          example: Climate2019
+        edit_by_user_id:
+          type: integer
+          description: OSTI user ID responsible for this edit of the metadata.
+        edit_reason:
+          type: string
+          description: Value provided by user editing a record describing the reason for the edit.
+        geolocations:
+          type: array
+          description: List of geolocation references (in WKT format) for this record
+          example:
+            - POINT (-5.23, -18.223) LABEL "Blue Dot"
+          items:
+            type: string
+        format_information:
+          type: string
+          description: Information about the format of the product, including any operating system or
+            program requirements for use of the data, as applicable.
+          example: Originally Word Perfect 4.2 document
+        hidden_flag:
+          type: boolean
+          description: Indicates if this record is currently hidden
+          example: N
+        input_code:
+          type: string
+        invention_disclosure_flag:
+          type: boolean
+        journal_fulltext_embargo_sunset_date:
+          type: string
+          description: Indicates date on which the fulltext embargo is to end
+          example: 7/6/2022
+        journal_issue:
+          type: string
+          description: Journal issue number for this record if any
+          example: 44
+        journal_license_url:
+          type: string
+          description: URL for information regarding the journal license for information
+          example:  https://journal-publishers.com/license/3.02/text
+        journal_name:
+          type: string
+          description: Name of journal publishing this information
+          example: Proceedings of the National Academy of Sciences
+        journal_open_access_flag:
+          type: string
+          description: Indicates if the journal article is available in an open access journal.
+          example: N
+        journal_type:
+          type: string
+          description: |
+            Specific sub-type of the journal article.  For product type "JA" only.
+            
+            Further qualifies the type of record.
+            
+            | code | description |
+            | -- | -- |
+            | FT | Manuscript |
+            | AM | DOE Accepted Manuscript |
+            | AW | DOE Accepted Manuscript without DOI |
+            | PA | Published Article (CHORUS) |
+            | PM | Published Accepted Manuscript (CHORUS) |
+
+          example: AM
+        journal_volume:
+          type: string
+          description: Journal volume reference for this publication
+          example: 215
+        keywords:
+          type: array
+          description: Concise set of key words for this record
+          example:
+            - NUCLEAR
+            - REACTIONS
+          items:
+            type: string
+        languages:
+          type: array
+          description: Language codes for this record
+          example:
+            - English
+          items:
+            type: string
+        opn_addressee:
+          type: string
+          description: For OpenNET records, the addressee information
+        opn_declassified_date:
+          type: string
+          description: For OpenNET records, the date information was declassified
+          example: 03/02/2018
+        opn_declassified_status:
+          type: string
+          description: For OpenNET records, status of declassification of information
+          example: N
+        opn_document_categories:
+          type: array
+          description: For OpenNET records, list of any document categories pertaining to this record
+          example: 
+            - Chemistry
+            - Geothermal
+          items:
+            type: string
+        opn_document_location:
+          type: string
+          example: US Department of Science, Office 201
+        opn_fieldoffice_acronym_code:
+          type: string
+        other_information:
+          type: array
+          items:
+            type: string
+        ouo_release_date:
+          description: Date of OUO access limitation expiration if applicable.
+          type: string
+        pams_publication_status:
+          description: |
+            (PAMS only) PAMS system specific publication status information.
+            | value | description |
+            | -- | -- |
+            | 1 | Published |
+            | 2 | Awaiting Publication |
+            | 3 | Accepted |
+            | 4 | Under Review |
+            | 5 | Submitted |
+            | 0 | Other |
+          type: integer
+        pams_publication_status_other:
+          type: string
+          description: (PAMS only) PAMS system other publication status information.
+        pams_authors:
+          type: string
+          description: (PAMS only) All authors on a PAMS record if applicable.
+        pams_product_sub_type:
+          type: integer
+          description: |
+            (PAMS only) Specific sub type of record for PAMS system.
+            | value | description |
+            | -- | -- |
+            | 1 | Journal Article (detail in publication status) |
+            | 2 | Book |
+            | 3 | Book Chapter |
+            | 4 | Thesis/Dissertation |
+            | 5 | Conference Paper/Presentation |
+            | 6 | Website |
+            | 7 | Other Publication |
+            | 8 | Patent |
+            | 9 | Invention |
+            | 10 | License |
+            | 11 | Audio or Video |
+            | 12 | Databases |
+            | 13 | Data and Research Material |
+            | 14 | Education Aids or Curricula |
+            | 15 | Evaluation Instruments |
+            | 16 | Instruments or Equipment |
+            | 17 | Models |
+            | 18 | Physical Collections |
+            | 19 | Protocols |
+            | 20 | Software or NetWare |
+            | 21 | Survey Instruments |
+            | 22 | Other Award Product |
+            | 23 | Technology or Technique |
+        pams_patent_country_code:
+          type: string
+          description: (PAMS only) Patent country code for PAMS records.
+        pams_transnational_patent_office:
+          type: string
+          description: (PAMS only) Patent office information for PAMS records if applicable.
+        paper_flag:
+          type: boolean
+          description: Indicates if OSTI has or had a paper copy of this product.
+          example: true
+        patent_assignee:
+          description: The holder of property rights to a patent.
+          type: string
+          example: United Property Holdings, LLC
+        patent_file_date:
+          description: Date patent was filed with US Patent Office.
+          type: string
+          example: 04/06/2018
+        patent_priority_date:
+          type: string
+          example: 07/12/2004
+        pdouo_exception_number:
+          type: string
+          description: Exception number for PDOUO access limitation records.
+        pending_enhancement:
+          type: boolean
+        prevent_transfer:
+          type: boolean
+          description: Internal state to determine if this record should be transferred or not.
+          example: false
+        product_size:
+          type: string
+          description: Information regarding physical size of media or report, if applicable.
+          example: 227 pages
+        product_type:
+          example: TR
+          type: string
+          enum:
+            - TR
+            - JA
+            - FS
+            - TD
+            - P
+            - PD
+            - AR
+            - CO
+            - B
+          description: |
+            Indicates primary type of record:
+            | code | description |
+            | -- | -- |
+            | AR | Accomplishment Report |
+            | B | Book |
+            | CO | Conference Information |
+            | FS | Factsheet |
+            | JA | Journal Article |
+            | P | Patent |
+            | PD | Program Document |
+            | TD | Thesis/Dissertation |
+            | TR | Technical or Workshop Report |
+
+        product_type_other:
+          type: string
+          description: Additional information for "OTHER" product types
+        prot_flag:
+          type: string
+          description: |
+            Indicates the type of protected data described by this record (PROT in
+            ACCESS_LIMITATIONS).
+            
+            | code | description |
+            | -- | -- |
+            | CRADA | CRADA record |
+            | EPACT | EPACT record, protected until PROT_RELEASE_DATE |
+            | OTHER | Other protected record, described in PROT_DATA_OTHER |
+
+        prot_data_other:
+          type: string
+          description: Information regarding why the information is protected if not a CRADA product.
+        prot_release_date:
+          type: string
+          description: The date on which data protections for this record will end.
+          example: 07/23/2023
+        publication_date:
+          type: string
+          description: Date of publication of this record
+          example: 06/12/2009
+        publication_date_text:
+          type: string
+          description: String representation of the publication date (e.g., "Summer 2001")
+          example: Winter 2012
+        publisher_information:
+          type: string
+          description: Publisher-specific information if applicable
+        related_doc_info:
+          type: string
+          description: Additional information regarding the document.
+        released_to_osti_date:
+          type: string
+          description: Date record information was released to OSTI, as entered by
+            releasing official.
+          example: 06/03/2019
+        releasing_official_comments:
+          type: string
+          description: Any comments made by the releasing official on the record.
+          example: Final report due January 2021.
+        report_period_end_date:
+          type: string
+          format: date
+        report_period_start_date:
+          type: string
+          format: date
+        report_types:
+          type: array
+          items:
+            type: string
+          description:  |
+            The type(s) of information or frequency of reporting of information in this report.
+            | code | description |
+            | -- | -- |
+            | A | Annual |
+            | B | Book |
+            | F | Final |
+            | I | Indeterminate |
+            | M | Monthly |
+            | O | Other |
+            | Q | Quarterly |
+            | S | Semi-annual |
+            | T | Topical |
+            | X | Other publications |
+        report_type_other:
+          type: string
+          description: Detail information about "Other" report types.
+        sbiz_flag:
+          type: string
+          description: Indicates if this metadata is SBIR or STTR related.
+          example:
+            - SBIR
+            - STTR
+        sbiz_phase:
+          type: string
+          description: A three character field constrained to "I", "II", "IIA", "IIB", or "III" indicating the 
+            phase of this SBIR/STTR report.
+        sbiz_previous_contract_number:
+          type: string
+          description: The previous SBIR/STTR contract number if a Phase III SBIR/STTR report.
+        sbiz_release_date:
+          type: string
+          format: date
+          description: Date data protections on this SBIR/STTR record will expire.
+        site_ownership_code:
+          type: string
+          description: Code of the DOE site submitting this document
+          example: BNL
+        site_unique_id:
+          type: string
+          description: Site-specified unique accession number for this record
+          example: 89345
+        subject_category_code:
+          type: array
+          items:
+            type: string
+          description: Set of subject category code values for this report
+          example:
+            - 02
+            - 31
+        subject_category_code_legacy:
+          type: array
+          items:
+            type: string
+          description: Any legacy or historical subject category codes for this report
+        transmission_mode:
+          type: string
+        title:
+          type: string
+          example: "Sample document title"
+          description: Title of record
+        identifiers:
+          type: array
+          description: List of identifying numbers related to this record
+          items:
+            $ref: '#/components/schemas/Identifier'
+        organizations:
+          type: array
+          description: List of organizations related to this record
+          items:
+            $ref: '#/components/schemas/Organization'
+        persons:
+          type: array
+          description: List of persons (authors, contributors, etc.) related to this record
+          items:
+            $ref: '#/components/schemas/Person'
+        related_identifiers:
+          type: array
+          description: List of related identifiers connected to this record
+          items:
+            $ref: '#/components/schemas/RelatedIdentifier'
+
+        url:
+          type: string
+          format: uri
+          description: Optionally, a link to product, landing page, or technical report described by this record.  If the
+            product or report is to be hosted by OSTI, the media itself should be uploaded through the API media interfaces
+            once the metadata information has been entered and the OSTI ID obtained.
+            
+    MediaFile:
+      type: object
+      properties:
+        media_file_id:
+          type: integer
+          example: 983445
+          description: Unique identifier for a given MEDIA FILE.
+        media_id:
+          type: integer
+          example: 233743
+          description: Link to parent MEDIA SET ID.
+        parent_media_file_id:
+          type: integer
+          example: 0
+          description: If non-zero, indicates unique MEDIA FILE ID this MEDIA FILE is derived from.
+        media_status:
+          type: string
+          example: DONE
+          description: Indiciates current processing status for this MEDIA FILE.
+        media_type:
+          type: string
+          example: T
+          description: Indicates TYPE of media file (Text, Original, Enhanced, etc.)
+        url_type:
+          type: string
+          example: L
+          enum:
+            - L 
+            - O
+          description: Indicates if the file is LOCALLY HOSTED ("L") or OFF-SITE URL ("O").
+        url:
+          type: string
+          example: report.pdf
+          description: Either the file name for local files, or URL path to off-site resource.
+        mime_type:
+          type: string
+          example: application/pdf
+          description: Mime type describing the MEDIA FILE content.
+        added_by_user_id:
+          type: integer
+          example: 999
+          description: Indicates the ELINK USER ID that attached this MEDIA FILE.
+        media_source:
+          type: string
+          example: TEXT_FILE_EXTRACTION
+          description: Describes method of file production or association with this media set.
+        file_size_bytes:
+          type: integer
+          example: 993834
+          description: If local file, the file size in bytes.
+        duration_seconds:
+          type: integer
+          example: 77
+          description: For audio-visual media, the duration of the resource in seconds.
+        document_page_count:
+          type: integer
+          example: 22
+          description: For document-based media, the number of printed pages if applicable.
+        subtitle_tracks:
+          type: integer
+          example: 2
+          description: Indicates the number of subtitle tracks for audio-visual media.
+        video_tracks:
+          type: integer
+          example: 1
+          description: Indicates the number of video tracks in audio-visual media.
+        date_file_added:
+          type: string
+          example: "2012-08-33T15:33:22.504+0000"
+          description: Indicates the date and time this media file was created.
+        date_file_updated:
+          type: string
+          example: "2013-04-22T18:33:28.234+0000"
+          description: Indicates the last date and time this media file was modified.
+          
+    MediaSet:
+      type: object
+      properties:
+        media_id:
+          type: integer
+          example: 233743
+          description: Unique ID for this MEDIA SET.
+        previous_media_id:
+          type: integer
+          example: 24093
+          description: Unique ID of media set replaced by this one, if applicable.
+        osti_id:
+          type: integer
+          example: 99238
+          description: Links to Record OSTI_ID value for a Media Set.
+        status:
+          type: string
+          example: PROCESSING
+          description: Indicates current processing state or level of this set.
+        added_by_user_id:
+          type: integer
+          example: -33
+          description: Indicates user ID that first added or created this media set.
+        media_location:
+          type: string
+          example: L
+          enum: 
+            - L
+            - O
+          description: Indicates if this media set's main content is LOCAL or OFF-SITE.
+        media_source:
+          type: string
+          example: WEB
+          description: Indicates the initial primary source of the media set.
+        pii_human_identified_user_id:
+          type: integer
+          example: 8293
+          description: User ID that has examined auto detected PII hits in the document and acknowledged their state.
+        pii_automated_hits:
+          type: integer
+          example: 0
+          description: Indicates the number of PII patterns found by the automated scanning tool
+            during media processing on this set.
+        date_added:
+          type: string
+          example: "1992-03-08"
+          description: Date this media set was first created.
+        date_updated:
+          type: string
+          example: "2009-11-05"
+          description: Date this media set was last modified.
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/MediaFile'
+            
+    ErrorSet:
+      type: object
+      properties:
+        errors:
+          type: array
+          items: 
+            $ref: "#/components/schemas/Error"
+            
+    Error:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP status code of error response.
+          example: 400
+        detail:
+          type: string
+          description: Detail error message of the issue.
+          example: "Contract number missing."
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              description: JSON pointer indicating location in error.
+              example: "/identifiers"
+    Archive:
+      allOf: 
+        - $ref: '#/components/schemas/Record'
+      type: object
+      properties:
+        valid_date_start:
+          type: string
+          format: date-time
+          description: Date (UTC) of this revision's inception.
+        valid_date_end:
+          type: string
+          format: date-time
+          description: Date (UTC) the revision was replaced, if any; null indicates this record is the current version.
+      description: Previous version of a given Record, replaced by subsequent revisions
