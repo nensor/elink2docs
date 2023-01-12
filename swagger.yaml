@@ -1603,14 +1603,14 @@ components:
               - OTHR
         access_limitation_other:
           type: string
-          description: Additional information about access limitation for this record, if needed
+          description: Additional information about access limitation for this record, if needed.
         added_by_user_id:
           type: integer
           description: ELINK user ID that initially entered the record.
           example: 28931
         announcement_codes:
           type: array
-          description: List of announcement codes for this record
+          description: List of announcement codes for this record.
           example:
             - EDB
             - INIS
@@ -1632,7 +1632,7 @@ components:
           example: LAB_API
         conference_information:
           type: string
-          description: Describes the conference pertaining to this record, if any
+          description: Describes the conference pertaining to this record, if any; usually name and / or location the event took place.
           example: ApacheCON 2019 discussion panel #18
         conference_type:
           type: string
@@ -1858,7 +1858,7 @@ components:
           type: integer
         pams_publication_status_other:
           type: string
-          description: (PAMS only) PAMS system other publication status information.
+          description: (PAMS only) PAMS system other publication status information. Required if pams_publication_status is 0-Other.
         pams_authors:
           type: string
           description: (PAMS only) All authors on a PAMS record if applicable.
@@ -1915,6 +1915,9 @@ components:
         pdouo_exception_number:
           type: string
           description: Exception number for PDOUO access limitation records.
+        peer_reviewed_flag:
+          type: boolean
+          description: Indicate if the resource has been peer-reviewed.
         pending_enhancement:
           type: boolean
         prevent_transfer:
