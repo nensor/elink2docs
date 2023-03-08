@@ -2324,10 +2324,9 @@
           },
           "geolocations" : {
             "type" : "array",
-            "description" : "List of geolocation references (in WKT format) for this record",
-            "example" : [ "POINT (-5.23, -18.223) LABEL \"Blue Dot\"" ],
+            "description" : "List of geolocation references for this record.",
             "items" : {
-              "type" : "string"
+              "$ref" : "#/components/schemas/Geolocation"
             }
           },
           "format_information" : {
@@ -2656,6 +2655,28 @@
           }
         }
       },
+      "Geolocation" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "description" : "Describes the shape of this geolocation attribute. (Optional, type may be determined by examination of the points.)",
+            "example" : "POINT",
+            "enum" : [ "POINT", "BOX", "POLYGON" ]
+          },
+          "label" : {
+            "type" : "string",
+            "description" : "Optional place name for this location or set of geolocation points.",
+            "example" : "Maryland coastal waters"
+          },
+          "points" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Geolocation_points"
+            }
+          }
+        }
+      },
       "MediaFile" : {
         "type" : "object",
         "properties" : {
@@ -2920,6 +2941,19 @@
             "type" : "string",
             "description" : "File content to associate with the metadata.",
             "format" : "binary"
+          }
+        }
+      },
+      "Geolocation_points" : {
+        "type" : "object",
+        "properties" : {
+          "latitude" : {
+            "type" : "integer",
+            "description" : "Latitude of this point in the geolocation; limited to -90 to 90, inclusive."
+          },
+          "longitude" : {
+            "type" : "integer",
+            "description" : "Longitude of this point in the geolocation; limited to -180 to 180, inclusive."
           }
         }
       },
