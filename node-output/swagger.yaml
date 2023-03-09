@@ -2244,14 +2244,6 @@
             "description" : "Country of publication for this record",
             "example" : "US"
           },
-          "dataset_content_types" : {
-            "type" : "array",
-            "description" : "List of content types pertaining to this record if a data set:\n\n| code | description |\n| -- | -- |\n| I | Instrument |\n| ND | Numeric Data |\n| IP | Images or Photos |\n| IM | Interactive Data Map |\n| AS | Animation/Simulation |\n| GD | Genome/Genetic Data |\n| FP | Figures/Plots |\n| MM | Multimedia |\n| SM | Specialized Mix |\n",
-            "example" : [ "ND", "AS" ],
-            "items" : {
-              "type" : "string"
-            }
-          },
           "date_added" : {
             "type" : "string",
             "description" : "Date record first entered the OSTI system. Value internally maintaned by ELINK.",
