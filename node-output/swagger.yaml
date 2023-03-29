@@ -435,11 +435,120 @@
             }
           }
         }
-      },
+      }
+    },
+    "/records/{id}" : {
+      "get" : {
+        "tags" : [ "records" ],
+        "summary" : "Retrieve metadata information for a particular record by OSTI ID.",
+        "description" : "Obtain the metadata JSON for a record at OSTI.",
+        "operationId" : "",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Unique OSTI ID value for the record to retrieve.",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JSON information containing metadata about the record in question.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Record"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/records/{state}" : {
       "post" : {
         "tags" : [ "records" ],
         "summary" : "Submit new metadata to OSTI.",
         "description" : "Create a new metadata record or report with OSTI.",
+        "parameters" : [ {
+          "name" : "state",
+          "in" : "path",
+          "description" : "Desired workflow state for the new record submission.\n| value | description |\n| -- | -- |\n| save | Store the record in a temporary working state |\n| submit | Submit record for further processing or approval on completion |\n",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "submit"
+          }
+        } ],
         "requestBody" : {
           "content" : {
             "application/json" : {
@@ -616,101 +725,8 @@
         }
       }
     },
-    "/records/{id}" : {
+    "/records/{id}/{state}" : {
       "summary" : "Interact with existing records by OSTI ID.",
-      "get" : {
-        "tags" : [ "records" ],
-        "summary" : "Retrieve metadata information for a particular record by OSTI ID.",
-        "description" : "Obtain the metadata JSON for a record at OSTI.",
-        "operationId" : "",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "description" : "Unique OSTI ID value for the record to retrieve.",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "integer"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "JSON information containing metadata about the record in question.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Record"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Authentication required.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorSet"
-                },
-                "example" : {
-                  "errors" : [ {
-                    "status" : 401,
-                    "detail" : "No user credentials supplied."
-                  } ]
-                }
-              }
-            }
-          },
-          "403" : {
-            "description" : "Access to indicated record is forbidden.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorSet"
-                },
-                "example" : {
-                  "errors" : [ {
-                    "status" : 403,
-                    "detail" : "Access is denied."
-                  } ]
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Record is not on file.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorSet"
-                },
-                "example" : {
-                  "errors" : [ {
-                    "status" : 404,
-                    "detail" : "Record is not on file."
-                  } ]
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "A server error occurred during the request.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ErrorSet"
-                },
-                "example" : {
-                  "errors" : [ {
-                    "status" : 500,
-                    "detail" : "Internal server error."
-                  } ]
-                }
-              }
-            }
-          }
-        }
-      },
       "put" : {
         "tags" : [ "records" ],
         "summary" : "Update existing record information.",
@@ -724,6 +740,17 @@
           "explode" : false,
           "schema" : {
             "type" : "integer"
+          }
+        }, {
+          "name" : "state",
+          "in" : "path",
+          "description" : "Desired workflow state for the record update.\n| value | description |\n| -- | -- |\n| save | Store the record in a temporary working state |\n| submit | Submit record for further processing or approval on completion |\n",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "submit"
           }
         } ],
         "requestBody" : {
