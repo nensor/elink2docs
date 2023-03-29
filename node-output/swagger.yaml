@@ -1,0 +1,2991 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "ELINK2 API",
+    "description" : "ELINK version 2 record and media API.",
+    "contact" : {
+      "name" : "Neal Ensor",
+      "email" : "ensorn@osti.gov"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version" : "2.0.0"
+  },
+  "servers" : [ {
+    "url" : "/"
+  } ],
+  "tags" : [ {
+    "name" : "records",
+    "description" : "Interact with record metadata in JSON."
+  }, {
+    "name" : "archive",
+    "description" : "Interact with previous revisions of record metadata."
+  }, {
+    "name" : "record media",
+    "description" : "Interact with media sets by associated record OSTI ID."
+  }, {
+    "name" : "media file",
+    "description" : "Interact directly with individual media files based on unique ID."
+  } ],
+  "paths" : {
+    "/records" : {
+      "get" : {
+        "tags" : [ "records" ],
+        "summary" : "Search OSTI documents based on passed in criteria values and filters.",
+        "description" : "Search for records at OSTI based on indicated parameters.",
+        "parameters" : [ {
+          "name" : "all",
+          "in" : "query",
+          "description" : "Search within any available search field for the requested string",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "title",
+          "in" : "query",
+          "description" : "Search within the title of a record",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "authors",
+          "in" : "query",
+          "description" : "Search within author names and affiliations",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "contributors",
+          "in" : "query",
+          "description" : "Search within contributor names and affiliations",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "organizations",
+          "in" : "query",
+          "description" : "Search within organizations on a record",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "identifiers",
+          "in" : "query",
+          "description" : "Search within record identifying numbers",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "doi",
+          "in" : "query",
+          "description" : "Search DOI values",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "description",
+          "in" : "query",
+          "description" : "Search within description/abstract of records",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "language",
+          "in" : "query",
+          "description" : "Filter by main language of the record",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "keywords",
+          "in" : "query",
+          "description" : "Search within record keywords",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "subject_code",
+          "in" : "query",
+          "description" : "Search within subject categories",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "sponsor_organizations",
+          "in" : "query",
+          "description" : "Search within sponsor organization values",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "contributing_organizations",
+          "in" : "query",
+          "description" : "Search within contributing organization values",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "doe_contract_numbers",
+          "in" : "query",
+          "description" : "Search within DOE contract number values",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "nondoe_contract_numbers",
+          "in" : "query",
+          "description" : "Search within non-DOE contract or award number values",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "publication_date_from",
+          "in" : "query",
+          "description" : "Search records published after the indicated date (MM/DD/YYYY)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "publication_date_to",
+          "in" : "query",
+          "description" : "Search records published before the indicated date (MM/DD/YYYY)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "date_first_submitted_from",
+          "in" : "query",
+          "description" : "Search results first submitted after the indicated date (MM/DD/YYYY)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "date_first_submitted_to",
+          "in" : "query",
+          "description" : "Search results first submitted before the indicated date (MM/DD/YYYY)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "date_last_submitted_from",
+          "in" : "query",
+          "description" : "Search results last submitted after the indicated date (MM/DD/YYYY)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "date_last_submitted_to",
+          "in" : "query",
+          "description" : "Search results last submitted before the indicated date (MM/DD/YYYY)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "report_numbers",
+          "in" : "query",
+          "description" : "Search within report numbers",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "related_identifiers",
+          "in" : "query",
+          "description" : "Search related identifier information",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "workflow_status",
+          "in" : "query",
+          "description" : "Filter by workflow status of record",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "R", "SA", "SR", "SO" ]
+          }
+        }, {
+          "name" : "site_ownership_code",
+          "in" : "query",
+          "description" : "Filter based on site ownership code value",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "hidden_flag",
+          "in" : "query",
+          "description" : "Filter based on whether record is hidden or not",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean",
+            "enum" : [ true, false ]
+          }
+        }, {
+          "name" : "access_limitations",
+          "in" : "query",
+          "description" : "Filter based on access limitation values of a record",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "product_type",
+          "in" : "query",
+          "description" : "Filter by product type of record",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "start",
+          "in" : "query",
+          "description" : "Starting offset (from 0) of record set",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "rows",
+          "in" : "query",
+          "description" : "Number of rows to retrieve at a time (default 25)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful query response.",
+            "headers" : {
+              "x-total-count" : {
+                "description" : "Total number of records matching this query.",
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "integer"
+                }
+              },
+              "link" : {
+                "description" : "If query results require pagination, this header value will contain the various links to first, last, next, and previous URLs to obtain additional results.",
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Record"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/records/{id}" : {
+      "get" : {
+        "tags" : [ "records" ],
+        "summary" : "Retrieve metadata information for a particular record by OSTI ID.",
+        "description" : "Obtain the metadata JSON for a record at OSTI.",
+        "operationId" : "",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Unique OSTI ID value for the record to retrieve.",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JSON information containing metadata about the record in question.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Record"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/records/{state}" : {
+      "post" : {
+        "tags" : [ "records" ],
+        "summary" : "Submit new metadata to OSTI.",
+        "description" : "Create a new metadata record or report with OSTI.",
+        "parameters" : [ {
+          "name" : "state",
+          "in" : "path",
+          "description" : "Desired workflow state for the new record submission.\n| value | description |\n| -- | -- |\n| save | Store the record in a temporary working state |\n| submit | Submit record for further processing or approval on completion |\n",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "submit"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Record"
+              },
+              "example" : {
+                "title" : "Electron microscope data for photons",
+                "site_ownership_code" : "LLNL",
+                "product_type" : "TR",
+                "access_limitations" : [ "UNL" ],
+                "publication_date" : "02/18/2019",
+                "identifiers" : [ {
+                  "type" : "RN",
+                  "values" : [ "RN/2019-238942" ]
+                }, {
+                  "type" : "CN_DOE",
+                  "values" : [ "AG03-GX-2019238943" ]
+                } ],
+                "persons" : [ {
+                  "first_name" : "Arthur",
+                  "last_name" : "Mann",
+                  "type" : "AUTHOR"
+                }, {
+                  "first_name" : "Joe",
+                  "middle_name" : "Q.",
+                  "last_name" : "Public",
+                  "type" : "CONTRIB",
+                  "contributor_type" : "Editor"
+                } ],
+                "organizations" : [ {
+                  "type" : "ORIG_RES",
+                  "name" : "Oak Ridge National Laboratory",
+                  "ror" : "01qz5mb56",
+                  "country" : "US"
+                } ]
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "New resource data created, JSON of the new record contained in the response.  The Location header will also indicate the URI to GET the resource with its unique OSTI ID.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Record"
+                },
+                "example" : {
+                  "osti_id" : 78923,
+                  "title" : "Electron microscope data for photons",
+                  "workflow_status" : "SA",
+                  "site_ownership_code" : "LLNL",
+                  "product_type" : "TR",
+                  "access_limitation" : [ "UNL" ],
+                  "publication_date" : "02/18/2019",
+                  "identifiers" : [ {
+                    "type" : "RN",
+                    "values" : [ "RN/2019-238942" ]
+                  }, {
+                    "type" : "CN_DOE",
+                    "values" : [ "AG03-GX-2019238943" ]
+                  } ],
+                  "persons" : [ {
+                    "first_name" : "Arthur",
+                    "last_name" : "Mann",
+                    "person_type" : "AUTHOR"
+                  }, {
+                    "first_name" : "Joe",
+                    "middle_name" : "Q.",
+                    "last_name" : "Public",
+                    "person_type" : "CONTRIB",
+                    "contributor_type" : "Editor"
+                  } ],
+                  "organizations" : [ {
+                    "type" : "ORIG_RES",
+                    "name" : "Oak Ridge National Laboratory",
+                    "ror" : "01qz5mb56",
+                    "country" : "US"
+                  } ]
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request, JSON cannot be interpreted, or validation issues.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 400,
+                    "detail" : "Contract number missing.",
+                    "source" : {
+                      "pointer" : "/identifiers"
+                    }
+                  }, {
+                    "status" : 400,
+                    "detail" : "Name is required.",
+                    "source" : {
+                      "pointer" : "/persons/3/first_name"
+                    }
+                  } ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/records/{id}/{state}" : {
+      "summary" : "Interact with existing records by OSTI ID.",
+      "put" : {
+        "tags" : [ "records" ],
+        "summary" : "Update existing record information.",
+        "description" : "Update existing records at OSTI by unique OSTI ID.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Unique OSTI ID for record to update.",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "state",
+          "in" : "path",
+          "description" : "Desired workflow state for the record update.\n| value | description |\n| -- | -- |\n| save | Store the record in a temporary working state |\n| submit | Submit record for further processing or approval on completion |\n",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string",
+            "default" : "submit"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Record"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Requested changes were made, updated JSON contains new record data.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Record"
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request, JSON cannot be interpreted, or validation issues.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 400,
+                    "detail" : "Contract number missing.",
+                    "source" : {
+                      "pointer" : "/identifiers"
+                    }
+                  }, {
+                    "status" : 400,
+                    "detail" : "Name is required.",
+                    "source" : {
+                      "pointer" : "/persons/3/first_name"
+                    }
+                  } ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/media/{id}" : {
+      "summary" : "Interact with media associated with this OSTI ID, if any.",
+      "get" : {
+        "tags" : [ "record media" ],
+        "description" : "Obtain JSON of ALL media ever associated with OSTI ID, including historical or past versions of media.  Media association sets will be returned in reverse chronological order, with most recent sets first.  Each set will include the defined date range when the association was active, as well as a status code indicating if it was added, replaced, or removed.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The OSTI ID of the record to obtain set information.",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Information on all media sets associated with this OSTI ID.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/MediaSet"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "record media" ],
+        "description" : "Associate new media with a given OSTI ID.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The OSTI ID of the record to associate a new MEDIA SET for that record, becoming version 1 of that MEDIA SET.",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 89934
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/media_id_body"
+              }
+            },
+            "multipart/form-data" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/media_id_body_1"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "The operation was successful, new MEDIA SET was created.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MediaSet"
+                },
+                "example" : {
+                  "media_id" : 88345,
+                  "media_version" : 1,
+                  "files" : [ {
+                    "media_file_id" : 73485,
+                    "media_id" : 99345,
+                    "media_type" : "O",
+                    "url" : "newreport.pdf",
+                    "mime_type" : "application/pdf",
+                    "file_size_bytes" : 793453,
+                    "url_type" : "L",
+                    "media_status" : "NEW",
+                    "parent_file_id" : 0
+                  } ]
+                }
+              }
+            }
+          },
+          "400" : {
+            "description" : "Bad request, media already exists.  Also indicated if file or URL content is a duplicate of already associated media for this record.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 400,
+                    "detail" : "Media already exists, use PUT to replace."
+                  } ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "record media" ],
+        "description" : "Disassociate current media set from this record.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The OSTI ID of the record to remove media",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 77564
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "The operation was successful.  Media set should no longer be associated with the OSTI ID."
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/media/file/{id}" : {
+      "summary" : "Interact with particular MEDIA FILES based on unique MEDIA FILE ID.",
+      "get" : {
+        "tags" : [ "media file" ],
+        "description" : "Obtain content stream of a particular MEDIA FILE by its unique ID.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The MEDIA FILE ID of the file content desired.",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 99888
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "The content stream of the media file.  Content type will vary according to the mime type of the requested media file.",
+            "content" : {
+              "application/octet-stream" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "binary"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/records/version/{id}/first" : {
+      "get" : {
+        "tags" : [ "archive" ],
+        "description" : "Locate the very first revision of a given OSTI ID.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The OSTI ID value",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 2732
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JSON containing revision metadata is returned.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Archive"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/records/version/{id}/last" : {
+      "get" : {
+        "tags" : [ "archive" ],
+        "description" : "Locate the last or latest version of a given OSTI ID.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The OSTI ID value",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 2732
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JSON containing revision metadata is returned.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Archive"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/records/version/{id}/before/{version}" : {
+      "get" : {
+        "tags" : [ "archive" ],
+        "description" : "Obtain the version of the indicated OSTI ID immediately prior to the indicated version, if it exists.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "the OSTI ID of the record to use",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 83432
+          }
+        }, {
+          "name" : "version",
+          "in" : "path",
+          "description" : "the version number to start from",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 338
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JSON of the requested edit prior to the indicated version if such exists.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Archive"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/records/version/{id}/after/{version}" : {
+      "get" : {
+        "tags" : [ "archive" ],
+        "description" : "Obtain the version of the indicated OSTI ID immediately after the indicated version, if it exists.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "the OSTI ID of the record to use",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 83432
+          }
+        }, {
+          "name" : "version",
+          "in" : "path",
+          "description" : "the version number to start from",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 338
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JSON of the requested edit after the indicated version if such exists.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Archive"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/records/version/{id}/at/{version}" : {
+      "get" : {
+        "tags" : [ "archive" ],
+        "description" : "Access specific version number of a given OSTI ID if available.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The OSTI ID of requested metadata",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 490238
+          }
+        }, {
+          "name" : "version",
+          "in" : "path",
+          "description" : "The specific version number to retrieve",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 3849
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JSON containing the requested revision active at that point in time for the OSTI ID",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Archive"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/records/version/{id}/dated/{date}" : {
+      "get" : {
+        "tags" : [ "archive" ],
+        "description" : "Access revision of metadata by OSTI ID that was active at the given date-time provided.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "OSTI ID of requested metadata",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 487211
+          }
+        }, {
+          "name" : "date",
+          "in" : "path",
+          "description" : "Timestamp representing the date and time when revision was active",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JSON containing the requested revision active at that point in time for the OSTI ID",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Archive"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/records/version/{id}/versions" : {
+      "get" : {
+        "tags" : [ "archive" ],
+        "description" : "Obtain summary information of all given versions of a metadata record by its OSTI ID.",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The OSTI ID to summarize",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 9023233
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "JSON containing the requested revision active at that point in time for the OSTI ID",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/VersionSummary"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "OrganizationType" : {
+        "type" : "string",
+        "description" : "Indicates type of organization:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|COLLAB|Collaborator Organizations|\n|CONTRIB|Contributing Organizations|\n|FUNDER|Funders with Award DOIs|\n|ORIG_RES|Originating Research Organizations|\n|SPONSOR|Sponsoring Organizations|\n",
+        "enum" : [ "AUTHOR", "CONTRIB", "COLLAB", "FUNDER", "ORIG_RES", "SPONSOR" ]
+      },
+      "PersonType" : {
+        "type" : "string",
+        "description" : "Indicates type of person:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|CONTACT|Contact Information|\n|CONTRIB|Contributor|\n|RELEASE|Releasing Official|\n|SBIZ_BO|SBIR/STTR Business Official|\n|SBIZ_PI|SBIR/STTR Principal Investigator|\n",
+        "enum" : [ "AUTHOR", "RELEASE", "CONTACT", "CONTRIB", "SBIZ_PI", "SBIZ_BO" ]
+      },
+      "ContributorType" : {
+        "type" : "string",
+        "description" : "Describes the type of contribution to the work.\n|code|description|\n|----|-----------|\n|ContactPerson|Person with knowledge of how to access, troubleshoot, or otherwise field issues related to the resource.|\n|DataCollector|Person/institution responsible for finding or gathering data under the guidelines of the author(s) or Principal Investigator.|\n|DataCurator|Person tasked with reviewing, enhancing, cleaning, or standardizing metadata and the associated data submitted.|\n|DataManager|Person (or organisation with a staff of data managers, such as a data centre) responsible for maintaining the finished resource.|\n|Distributor|Institution tasked with responsibility to generate/disseminate copies of the resource in either electronic or print form.|\n|Editor|A person who oversees the details related to the publication format of the resource.|\n|HostingInstitution|The organisation allowing the resource to be available on the internet.|\n|Producer|Typically a person or organisation responsible for the artistry and form of a media product.|\n|ProjectLeader|Person officially designated as head of project team instrumental in the work necessary to development of the resource.|\n|ProjectManager|Person officially designated as manager of a project. Project may consist of one or many project teams and sub-teams.|\n|ProjectMember|Person on the membership list of a designated project/project team.|\n|RegistrationAgency|Institution officially appointed by a Registration Authority to handle specific tasks within a defined area of responsibility.|\n|RegistrationAuthority|A standards-setting body from which Registration Agencies obtain official recognition and guidance.|\n|RelatedPerson|Person with no specifically defined role in the development of the resource, but who is someone the author wishes to recognize.|\n|Researcher|A person involved in analyzing data or the results of an experiment or formal study.|\n|ResearchGroup|Refers to a group of individuals with a lab, department, or division; the group has a particular, defined focus of activity.|\n|RightsHolder|Person or institution owning or managing property rights, including intellectual property rights over the resource.|\n|Sponsor|Person or organisation that issued a contract or under the auspices of which a work has been performed.|\n|Supervisor|Designated administrator over one or more groups working to produce a resource or over one or more steps of development process.|\n|WorkPackageLeader|A Work Package is a recognized data product, not all of which is included in publication.|\n|Other|Any person or institution making a significant contribution, but whose contribution does not \"fit\".|\n",
+        "enum" : [ "ContactPerson", "DataCollector", "DataCurator", "DataManager", "Distributor", "Editor", "HostingInstitution", "Producer", "ProjectLeader", "ProjectManager", "ProjectMember", "RegistrationAgency", "RegistrationAuthority", "RelatedPerson", "Researcher", "ResearchGroup", "RightsHolder", "Sponsor", "Supervisor", "WorkPackageLeader", "Other" ]
+      },
+      "RelationType" : {
+        "type" : "string",
+        "description" : "Indicates the relationship between this identifier and the source record.\n|code|description|\n|----|-----------|\n|Cites|indicates that A includes B in a citation|\n|Compiles|indicates B is the result of a compile or creation event using A|\n|Continues|indicates A is a continuation of the work B|\n|Describes|indicates A describes B|\n|Documents|indicates A is documentation about/B|\n|HasMetadata|indicates resource A has additional metadata B|\n|HasPart|indicates A includes the part B|\n|HasVersion|indicates A has a version of B|\n|IsCitedBy|indicates that B includes A in a citation|\n|IsCompiledBy|indicates B is used to compile or create A|\n|IsContinuedBy|indicates A is continued by the work B|\n|IsDerivedFrom|indicates B is a source upon which A is based|\n|IsDescribedBy|Indicates A is described by B|\n|IsDocumentedBy|indicates B is documentation about/explaining A|\n|IsIdenticalTo|indicates that A is identical to B, for use when there is a need to register two separate instances of the same resource|\n|IsMetadataFor|indicates additional metadata A for a resource B|\n|IsNewVersionOf|indicates A is a new edition of B, where the new edition has been modified or updated|\n|IsObsoletedBy|Indicates A is replaced by B|\n|IsOriginalFormOf|indicates A is the original form of B|\n|IsPartOf|indicates A is a portion of B; may be used for elements of a series|\n|IsPreviousVersionOf|indicates A is a previous edition of B|\n|IsReferencedBy|indicates A is used as a source of information by B|\n|IsRequiredBy|inidcates A is required by B|\n|IsReviewedBy|indicates that A is reviewed by B|\n|IsSourceOf|indicates A is a source upon which B is based|\n|IsSupplementTo|indicates that A is a supplement to B|\n|IsSupplementedBy|indicates that B is a supplement to A|\n|IsVariantFormOf|indicates A is a variant or different form of B, e.g. calculated or calibrated form or different packaging|\n|IsVersionOf|indicates A is a version of B|\n|Obsoletes|Indicates A replaces B|\n|References|indicates B is used as a source of information for A|\n|Requires|indicates A requires B|\n|Reviews|indicates that A is a review of B|\n",
+        "enum" : [ "IsDescribedBy", "Describes", "HasVersion", "IsVersionOf", "IsRequiredBy", "Requires", "Obsoletes", "IsObsoletedBy", "IsCitedBy", "Cites", "IsSupplementTo", "IsSupplementedBy", "IsContinuedBy", "Continues", "HasMetadata", "IsMetadataFor", "IsNewVersionOf", "IsPreviousVersionOf", "IsPartOf", "HasPart", "IsReferencedBy", "References", "IsDocumentedBy", "Documents", "IsCompiledBy", "Compiles", "IsVariantFormOf", "IsOriginalFormOf", "IsIdenticalTo", "IsReviewedBy", "Reviews", "IsDerivedFrom", "IsSourceOf" ]
+      },
+      "IdentifierType" : {
+        "type" : "string",
+        "description" : "Describe the type of identifier:\n|code | description|\n|-------|-------|\n|AUTH_REV |Authorization Revision Number|\n|CN_DOE |DOE Contract Number|\n|CN_NONDOE |Non DOE Contract Number|\n|CODEN |CODEN|\n|DOE_DOCKET | DOE Docket Number|\n|EDB |EDB Number|\n|ETDE_RN |ETDE Reference Number|\n|INIS_RN |INIS Reference Number|\n|ISSN |ISSN|\n|LEGACY |Legacy Identifier|\n|NSA |NSA Number|\n|OPN_ACC |Opennet Accession Number|\n|OTHER_ID |Other Identifying Number|\n|PATENT |Patent Number|\n|PROJ_ID |Research and Development Project Identifier|\n|PROP_REV |Proposal Revision Number|\n|REF |Reference Numbers|\n|REL_TRN |Related ETDE Technical Reference Number.|\n|RN |Report Number|\n|TRN |ETDE Technical Report Number|\n|TVI |Tape Volume Issue Number|\n|USER_VER |User Entered Version Number|\n|WORK_AUTH |Work Authorization Number|\n|WORK_PROP |Work Proposal Number|\n",
+        "enum" : [ "AUTH_REV", "CN_DOE", "CN_NONDOE", "CODEN", "DOE_DOCKET", "EDB", "ETDE_RN", "INIS_RN", "ISSN", "LEGACY", "NSA", "OPN_ACC", "OTHER_ID", "PATENT", "PROJ_ID", "PROP_REV", "REF", "REL_TRN", "RN", "TRN", "TVI", "USER_VER", "WORK_AUTH", "WORK_PROP" ]
+      },
+      "Identifier" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "$ref" : "#/components/schemas/IdentifierType"
+          },
+          "values" : {
+            "type" : "array",
+            "description" : "Array of identifier values for this type",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "OrganizationIdentifier" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "$ref" : "#/components/schemas/IdentifierType"
+          },
+          "values" : {
+            "type" : "array",
+            "description" : "Array of identifier values for this type",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }
+      },
+      "Organization" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "$ref" : "#/components/schemas/OrganizationType"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the organization",
+            "example" : "Quantum Physics of America, Inc."
+          },
+          "organization_id" : {
+            "type" : "integer",
+            "description" : "Unique identifying number of this organization"
+          },
+          "country" : {
+            "type" : "string",
+            "description" : "Country code indicating the base of operations for this organization",
+            "example" : "US"
+          },
+          "ror" : {
+            "type" : "string",
+            "description" : "Research Organization Registry identifier for this organization",
+            "example" : "8jg9902x"
+          },
+          "funder_id" : {
+            "type" : "string",
+            "description" : "Funding identifier for this organization"
+          },
+          "contributor_type" : {
+            "$ref" : "#/components/schemas/ContributorType"
+          },
+          "identifiers" : {
+            "type" : "array",
+            "description" : "List of any identifiers for this Organization",
+            "items" : {
+              "$ref" : "#/components/schemas/OrganizationIdentifier"
+            }
+          }
+        }
+      },
+      "RelatedIdentifier" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "description" : "Identify the type of this related identifier\n|Code |Description|\n|----|-----------|\n|URL|Uniform Resource Locator|\n|URN|Uniform Resource Name|\n|UPC|Universal Product Code/Barcode|\n|PURL|Persistent Uniform Resource Locator|\n|PMID|PubMed ID|\n|LSID|Life Science Identifier|\n|LISSN|Linking ISSN|\n|ISTC|International Standard Text Code|\n|ISSN| International Standard Serial Number|\n|ISGN|International Geo Sample Number |\n|ISBN|International Standard Book Number|\n|Handle|Handle ID (Corporation for National Research Initiatives)|\n|EISSN|Electronic International Standard Serial Number|\n|EAN13|European Article Number (renamed International Article Number) |\n|DOI|DOI|\n|bibcode|Astrophysics Data System bibliographic codes|\n|arXiv|arXiv identifier|\n|ARK|Archival Resource Key|\n",
+            "example" : "DOI",
+            "enum" : [ "DOI", "URL", "URN", "UPC", "PURL", "PMID", "LSID", "LISSN", "ISTC", "ISSN", "ISGN", "ISBN", "Handle", "EISSN", "EAN13", "bibcode", "arXiv", "ARK" ]
+          },
+          "relation" : {
+            "$ref" : "#/components/schemas/RelationType"
+          },
+          "value" : {
+            "type" : "string",
+            "description" : "The value of the identifier",
+            "example" : "10.11578/2020/28383"
+          }
+        },
+        "description" : "Identifies other resources that are related in some manner to this record"
+      },
+      "AffiliationType" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "Name of laboratory, university, etc. person is affiliated with",
+            "example" : "ACME Laboratories, LLC"
+          },
+          "country" : {
+            "type" : "string",
+            "description" : "Country code for location on this affiliation",
+            "example" : "US"
+          },
+          "organization_id" : {
+            "type" : "integer",
+            "description" : "ID reference used for OSTI identification of affiliation"
+          },
+          "ror" : {
+            "type" : "string",
+            "description" : "Research Organization Registry identifier for affiliation if any. (see https://ror.org/).",
+            "example" : "0r273g"
+          },
+          "funder_id" : {
+            "type" : "integer",
+            "description" : "ID reference for funder affiliations used by OSTI"
+          }
+        },
+        "description" : "Information about affiliations for a person."
+      },
+      "Person" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "$ref" : "#/components/schemas/PersonType"
+          },
+          "first_name" : {
+            "type" : "string",
+            "description" : "First (or \"Given\") name of the person",
+            "example" : "Sample"
+          },
+          "middle_name" : {
+            "type" : "string",
+            "description" : "Middle name or initial of the person",
+            "example" : "Q."
+          },
+          "last_name" : {
+            "type" : "string",
+            "description" : "Last (or \"Family\") name of this person",
+            "example" : "Person"
+          },
+          "email" : {
+            "type" : "array",
+            "description" : "List of any email address(es) associated with this person",
+            "example" : [ "persons@sample.org" ],
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "orcid" : {
+            "type" : "string",
+            "description" : "ORCID (https://orcid.org/) value for this person",
+            "example" : "0000-0001-2345-6789"
+          },
+          "phone" : {
+            "type" : "string",
+            "description" : "Contact phone number for this person",
+            "example" : "(555) 860-9923"
+          },
+          "osti_user_id" : {
+            "type" : "integer",
+            "description" : "OSTI-assigned identifier for this person, if any"
+          },
+          "contributor_type" : {
+            "$ref" : "#/components/schemas/ContributorType"
+          },
+          "affiliations" : {
+            "type" : "array",
+            "description" : "List of any affiliations for this person",
+            "items" : {
+              "$ref" : "#/components/schemas/AffiliationType"
+            }
+          }
+        },
+        "description" : "Information about a particular person involved in the production or maintenance of this record"
+      },
+      "Record" : {
+        "type" : "object",
+        "properties" : {
+          "osti_id" : {
+            "type" : "integer",
+            "description" : "Unique identifier for OSTI record, only required for updates.",
+            "example" : 9999
+          },
+          "biblio_version" : {
+            "type" : "integer",
+            "description" : "Unique version or edit number to represent this record.",
+            "example" : 1
+          },
+          "workflow_status" : {
+            "type" : "string",
+            "description" : "Desired status for this record at time of initial submission to OSTI.\n| code | description |\n| -- | -- |\n| SR | Submit to Releasing Official, additional required validations, must be approved to release |\n| SO | Submit to OSTI, releasing official approval level. At this level, record processing and release begins |\n| R | Released, record has been successfully processed |\n",
+            "example" : "SO",
+            "enum" : [ "R", "SR", "SO" ]
+          },
+          "access_limitations" : {
+            "type" : "array",
+            "description" : "Access limitation codes to describe the distribution rules and limitations for this work.\n\n| code | description |\n| -- | -- |\n| UNL | Unlimited announcement |\n| OPN | OpenNET (requires OpenNET attributes) |\n| CPY | Copyright restricted material |\n| OUO | Official use only |\n| ECI | Export-controlled information |\n| SSI | Security sensitive information |\n| PROT | Protected data (e.g., CRADA, additional information required) |\n| PAT | Patented information |\n| LRD | Limited Rights Data |\n| PDOUO | Program-determined OUO |\n| NNPI | Naval Navigation Propulsion Info |\n| INTL | International data |\n\nMost access limitations beyond UNL will require additional information for\ndefinitions in other required fields. Note that only certain combinations\nof access limitations are valid.\n",
+            "example" : [ "UNL", "OPN" ],
+            "items" : {
+              "type" : "string",
+              "enum" : [ "UNL", "OPN", "CPY", "OUO", "PROT", "PDOUO", "ECI", "PDSH", "USO", "LRD", "UCNI", "NAT", "NNPI", "INTL", "PROP", "PAT", "OTHR" ]
+            }
+          },
+          "access_limitation_other" : {
+            "type" : "string",
+            "description" : "Additional information about access limitation for this record, if needed."
+          },
+          "added_by_user_id" : {
+            "type" : "integer",
+            "description" : "ELINK user ID that initially entered the record.",
+            "example" : 28931
+          },
+          "announcement_codes" : {
+            "type" : "array",
+            "description" : "List of announcement codes for this record.",
+            "example" : [ "EDB", "INIS" ],
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "availability" : {
+            "type" : "string",
+            "description" : "Describes record's availibility information",
+            "example" : "Also available at https://sample.com/document/report.pdf"
+          },
+          "book_edition" : {
+            "type" : "string",
+            "description" : "For Book submissions, the edition number or name"
+          },
+          "book_volume" : {
+            "type" : "string",
+            "description" : "For Book submissions, the volume number of the work"
+          },
+          "collection_type" : {
+            "type" : "string",
+            "description" : "Indicates the OSTI collection type of this record.",
+            "example" : "LAB_API"
+          },
+          "conference_information" : {
+            "type" : "string",
+            "description" : "Describes the conference pertaining to this record, if any; usually name and / or location the event took place.",
+            "example" : "ApacheCON 2019 discussion panel"
+          },
+          "conference_type" : {
+            "type" : "string",
+            "description" : "Code representing the type of conference-related work of this record. Only applicable to CO type submissions.\n\n| code | description |\n| -- | -- |\n| C | Paper/Proceeding (Legacy Code) |\n| P | Proceedings |\n| A | Paper |\n| R | Presentation |\n| O | Poster |\n"
+          },
+          "contract_award_date" : {
+            "type" : "string",
+            "description" : "Date contract for this record was awarded",
+            "example" : "02/19/2012"
+          },
+          "country_publication_code" : {
+            "type" : "string",
+            "description" : "Country of publication for this record",
+            "example" : "US"
+          },
+          "date_added" : {
+            "type" : "string",
+            "description" : "Date record first entered the OSTI system. Value internally maintaned by ELINK.",
+            "format" : "date-time"
+          },
+          "date_updated" : {
+            "type" : "string",
+            "description" : "Date record was last updated at OSTI.  Maintained internally by ELINK.",
+            "format" : "date-time"
+          },
+          "date_released_first" : {
+            "type" : "string",
+            "description" : "Date of first release of this record by OSTI.  Maintained internally by ELINK.",
+            "format" : "date-time"
+          },
+          "date_released_last" : {
+            "type" : "string",
+            "description" : "Most recent date of release of this record by OSTI.  Maintained internally by ELINK.",
+            "format" : "date-time"
+          },
+          "date_submitted_first" : {
+            "type" : "string",
+            "description" : "Date record was first submitted to OSTI for publication. Maintained internally by ELINK.",
+            "format" : "date-time"
+          },
+          "date_submitted_last" : {
+            "type" : "string",
+            "description" : "Most recent date record information was submitted to OSTI.  Maintained internally by ELINK.",
+            "format" : "date-time"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Description or abstract for this record",
+            "example" : "Information about a particular record, report, or other document, or executive summary or abstract of same."
+          },
+          "descriptors" : {
+            "type" : "array",
+            "description" : "List of descriptor codes for this record",
+            "example" : [ "ATMOSPHERE", "ELECTRONS" ],
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "doe_funded_flag" : {
+            "type" : "string",
+            "description" : "Indicates if the record is primarily DOE-funded",
+            "example" : "Y"
+          },
+          "doe_supported_flag" : {
+            "type" : "string",
+            "description" : "Indicates if DOE support present or acknowledged on this record."
+          },
+          "doi" : {
+            "type" : "string",
+            "description" : "The DOI for this record, if any",
+            "example" : "10.5072/2020/238479ax"
+          },
+          "doi_infix" : {
+            "type" : "string",
+            "description" : "Any customized infix value for the DOI used when generating a DOI reference",
+            "example" : "Climate2019"
+          },
+          "edit_by_user_id" : {
+            "type" : "integer",
+            "description" : "OSTI user ID responsible for this edit of the metadata."
+          },
+          "edit_reason" : {
+            "type" : "string",
+            "description" : "Value provided by user editing a record describing the reason for the edit."
+          },
+          "geolocations" : {
+            "type" : "array",
+            "description" : "List of geolocation references for this record.",
+            "items" : {
+              "$ref" : "#/components/schemas/Geolocation"
+            }
+          },
+          "format_information" : {
+            "type" : "string",
+            "description" : "Information about the format of the product, including any operating system or program requirements for use of the data, as applicable.",
+            "example" : "Originally Word Perfect 4.2 document"
+          },
+          "hidden_flag" : {
+            "type" : "boolean",
+            "description" : "Indicates if this record is currently hidden",
+            "example" : false
+          },
+          "input_code" : {
+            "type" : "string"
+          },
+          "invention_disclosure_flag" : {
+            "type" : "boolean"
+          },
+          "journal_fulltext_embargo_sunset_date" : {
+            "type" : "string",
+            "description" : "Indicates date on which the fulltext embargo is to end",
+            "example" : "7/6/2022"
+          },
+          "journal_issue" : {
+            "type" : "string",
+            "description" : "Journal issue number for this record if any",
+            "example" : "44"
+          },
+          "journal_license_url" : {
+            "type" : "string",
+            "description" : "URL for information regarding the journal license for information",
+            "example" : "https://journal-publishers.com/license/3.02/text"
+          },
+          "journal_name" : {
+            "type" : "string",
+            "description" : "Name of journal publishing this information",
+            "example" : "Proceedings of the National Academy of Sciences"
+          },
+          "journal_open_access_flag" : {
+            "type" : "string",
+            "description" : "Indicates if the journal article is available in an open access journal.",
+            "example" : "N"
+          },
+          "journal_type" : {
+            "type" : "string",
+            "description" : "Specific sub-type of the journal article.  For product type \"JA\" only.\n\nFurther qualifies the type of record.\n\n| code | description |\n| -- | -- |\n| FT | Manuscript |\n| AM | DOE Accepted Manuscript |\n| AW | DOE Accepted Manuscript without DOI |\n| PA | Published Article (CHORUS) |\n| PM | Published Accepted Manuscript (CHORUS) |\n",
+            "example" : "AM"
+          },
+          "journal_volume" : {
+            "type" : "string",
+            "description" : "Journal volume reference for this publication",
+            "example" : "215"
+          },
+          "keywords" : {
+            "type" : "array",
+            "description" : "Concise set of key words for this record",
+            "example" : [ "NUCLEAR", "REACTIONS" ],
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "languages" : {
+            "type" : "array",
+            "description" : "Language codes for this record",
+            "example" : [ "English" ],
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "opn_addressee" : {
+            "type" : "string",
+            "description" : "For OpenNET records, the addressee information"
+          },
+          "opn_declassified_date" : {
+            "type" : "string",
+            "description" : "For OpenNET records, the date information was declassified",
+            "example" : "03/02/2018"
+          },
+          "opn_declassified_status" : {
+            "type" : "string",
+            "description" : "For OpenNET records, status of declassification of information",
+            "example" : "N"
+          },
+          "opn_document_categories" : {
+            "type" : "array",
+            "description" : "For OpenNET records, list of any document categories pertaining to this record",
+            "example" : [ "Chemistry", "Geothermal" ],
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "opn_document_location" : {
+            "type" : "string",
+            "example" : "US Department of Science, Office 201"
+          },
+          "opn_fieldoffice_acronym_code" : {
+            "type" : "string"
+          },
+          "other_information" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "ouo_release_date" : {
+            "type" : "string",
+            "description" : "Date of OUO access limitation expiration if applicable."
+          },
+          "pams_publication_status" : {
+            "type" : "integer",
+            "description" : "(PAMS only) PAMS system specific publication status information.\n| value | description |\n| -- | -- |\n| 1 | Published |\n| 2 | Awaiting Publication |\n| 3 | Accepted |\n| 4 | Under Review |\n| 5 | Submitted |\n| 0 | Other |\n"
+          },
+          "pams_publication_status_other" : {
+            "type" : "string",
+            "description" : "(PAMS only) PAMS system other publication status information. Required if pams_publication_status is 0-Other."
+          },
+          "pams_authors" : {
+            "type" : "string",
+            "description" : "(PAMS only) All authors on a PAMS record if applicable."
+          },
+          "pams_product_sub_type" : {
+            "type" : "integer",
+            "description" : "(PAMS only) Specific sub type of record for PAMS system.\n| value | description |\n| -- | -- |\n| 1 | Journal Article (detail in publication status) |\n| 2 | Book |\n| 3 | Book Chapter |\n| 4 | Thesis/Dissertation |\n| 5 | Conference Paper/Presentation |\n| 6 | Website |\n| 7 | Other Publication |\n| 8 | Patent |\n| 9 | Invention |\n| 10 | License |\n| 11 | Audio or Video |\n| 12 | Databases |\n| 13 | Data and Research Material |\n| 14 | Education Aids or Curricula |\n| 15 | Evaluation Instruments |\n| 16 | Instruments or Equipment |\n| 17 | Models |\n| 18 | Physical Collections |\n| 19 | Protocols |\n| 20 | Software or NetWare |\n| 21 | Survey Instruments |\n| 22 | Other Award Product |\n| 23 | Technology or Technique |\n"
+          },
+          "pams_patent_country_code" : {
+            "type" : "string",
+            "description" : "(PAMS only) Patent country code for PAMS records."
+          },
+          "pams_transnational_patent_office" : {
+            "type" : "string",
+            "description" : "(PAMS only) Patent office information for PAMS records if applicable."
+          },
+          "paper_flag" : {
+            "type" : "boolean",
+            "description" : "Indicates if OSTI has or had a paper copy of this product.",
+            "example" : true
+          },
+          "patent_assignee" : {
+            "type" : "string",
+            "description" : "The holder of property rights to a patent.",
+            "example" : "United Property Holdings, LLC"
+          },
+          "patent_file_date" : {
+            "type" : "string",
+            "description" : "Date patent was filed with US Patent Office.",
+            "example" : "04/06/2018"
+          },
+          "patent_priority_date" : {
+            "type" : "string",
+            "example" : "07/12/2004"
+          },
+          "pdouo_exception_number" : {
+            "type" : "string",
+            "description" : "Exception number for PDOUO access limitation records."
+          },
+          "peer_reviewed_flag" : {
+            "type" : "boolean",
+            "description" : "Indicate if the resource has been peer-reviewed."
+          },
+          "pending_enhancement" : {
+            "type" : "boolean"
+          },
+          "prevent_transfer" : {
+            "type" : "boolean",
+            "description" : "Internal state to determine if this record should be transferred or not.",
+            "example" : false
+          },
+          "product_size" : {
+            "type" : "string",
+            "description" : "Information regarding physical size of media or report, if applicable.",
+            "example" : "227 pages"
+          },
+          "product_type" : {
+            "type" : "string",
+            "description" : "Indicates primary type of record:\n| code | description |\n| -- | -- |\n| AR | Accomplishment Report |\n| B | Book |\n| CO | Conference Information |\n| FS | Factsheet |\n| JA | Journal Article |\n| P | Patent |\n| PD | Program Document |\n| TD | Thesis/Dissertation |\n| TR | Technical or Workshop Report |\n",
+            "example" : "TR",
+            "enum" : [ "TR", "JA", "FS", "TD", "P", "PD", "AR", "CO", "B" ]
+          },
+          "product_type_other" : {
+            "type" : "string",
+            "description" : "Additional information for \"OTHER\" product types"
+          },
+          "prot_flag" : {
+            "type" : "string",
+            "description" : "Indicates the type of protected data described by this record (PROT in\nACCESS_LIMITATIONS).\n\n| code | description |\n| -- | -- |\n| CRADA | CRADA record |\n| EPACT | EPACT record, protected until PROT_RELEASE_DATE |\n| OTHER | Other protected record, described in PROT_DATA_OTHER |\n"
+          },
+          "prot_data_other" : {
+            "type" : "string",
+            "description" : "Information regarding why the information is protected if not a CRADA product."
+          },
+          "prot_release_date" : {
+            "type" : "string",
+            "description" : "The date on which data protections for this record will end.",
+            "example" : "07/23/2023"
+          },
+          "publication_date" : {
+            "type" : "string",
+            "description" : "Date of publication of this record",
+            "example" : "06/12/2009"
+          },
+          "publication_date_text" : {
+            "type" : "string",
+            "description" : "String representation of the publication date (e.g., \"Summer 2001\")",
+            "example" : "Winter 2012"
+          },
+          "publisher_information" : {
+            "type" : "string",
+            "description" : "Publisher-specific information if applicable"
+          },
+          "related_doc_info" : {
+            "type" : "string",
+            "description" : "Additional information regarding the document."
+          },
+          "released_to_osti_date" : {
+            "type" : "string",
+            "description" : "Date record information was released to OSTI, as entered by releasing official.",
+            "example" : "06/03/2019"
+          },
+          "releasing_official_comments" : {
+            "type" : "string",
+            "description" : "Any comments made by the releasing official on the record.",
+            "example" : "Final report due January 2021."
+          },
+          "report_period_end_date" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "report_period_start_date" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "report_types" : {
+            "type" : "array",
+            "description" : "The type(s) of information or frequency of reporting of information in this report.\n| code | description |\n| -- | -- |\n| A | Annual |\n| B | Book |\n| F | Final |\n| I | Indeterminate |\n| M | Monthly |\n| O | Other |\n| Q | Quarterly |\n| S | Semi-annual |\n| T | Topical |\n| X | Other publications |\n",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "report_type_other" : {
+            "type" : "string",
+            "description" : "Detail information about \"Other\" report types."
+          },
+          "sbiz_flag" : {
+            "type" : "string",
+            "description" : "Indicates if this metadata is SBIR or STTR related.",
+            "example" : "[\"SBIR\",\"STTR\"]"
+          },
+          "sbiz_phase" : {
+            "type" : "string",
+            "description" : "A three character field constrained to \"I\", \"II\", \"IIA\", \"IIB\", or \"III\" indicating the phase of this SBIR/STTR report."
+          },
+          "sbiz_previous_contract_number" : {
+            "type" : "string",
+            "description" : "The previous SBIR/STTR contract number if a Phase III SBIR/STTR report."
+          },
+          "sbiz_release_date" : {
+            "type" : "string",
+            "description" : "Date data protections on this SBIR/STTR record will expire.",
+            "format" : "date"
+          },
+          "site_ownership_code" : {
+            "type" : "string",
+            "description" : "Code of the DOE site submitting this document",
+            "example" : "BNL"
+          },
+          "site_unique_id" : {
+            "type" : "string",
+            "description" : "Site-specified unique accession number for this record",
+            "example" : "89345"
+          },
+          "subject_category_code" : {
+            "type" : "array",
+            "description" : "Set of subject category code values for this report",
+            "example" : [ 2, 31 ],
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "subject_category_code_legacy" : {
+            "type" : "array",
+            "description" : "Any legacy or historical subject category codes for this report",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "transmission_mode" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Title of record",
+            "example" : "Sample document title"
+          },
+          "identifiers" : {
+            "type" : "array",
+            "description" : "List of identifying numbers related to this record",
+            "items" : {
+              "$ref" : "#/components/schemas/Identifier"
+            }
+          },
+          "organizations" : {
+            "type" : "array",
+            "description" : "List of organizations related to this record",
+            "items" : {
+              "$ref" : "#/components/schemas/Organization"
+            }
+          },
+          "persons" : {
+            "type" : "array",
+            "description" : "List of persons (authors, contributors, etc.) related to this record",
+            "items" : {
+              "$ref" : "#/components/schemas/Person"
+            }
+          },
+          "related_identifiers" : {
+            "type" : "array",
+            "description" : "List of related identifiers connected to this record",
+            "items" : {
+              "$ref" : "#/components/schemas/RelatedIdentifier"
+            }
+          },
+          "url" : {
+            "type" : "string",
+            "description" : "Optionally, a link to product, landing page, or technical report described by this record.  If the product or report is to be hosted by OSTI, the media itself should be uploaded through the API media interfaces once the metadata information has been entered and the OSTI ID obtained.",
+            "format" : "uri"
+          }
+        }
+      },
+      "Geolocation" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "description" : "Describes the shape of this geolocation attribute. (Optional, type may be determined by examination of the points.)",
+            "example" : "POINT",
+            "enum" : [ "POINT", "BOX", "POLYGON" ]
+          },
+          "label" : {
+            "type" : "string",
+            "description" : "Optional place name for this location or set of geolocation points.",
+            "example" : "Maryland coastal waters"
+          },
+          "points" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Geolocation_points"
+            }
+          }
+        }
+      },
+      "MediaFile" : {
+        "type" : "object",
+        "properties" : {
+          "media_file_id" : {
+            "type" : "integer",
+            "description" : "Unique identifier for a given MEDIA FILE.",
+            "example" : 983445
+          },
+          "media_id" : {
+            "type" : "integer",
+            "description" : "Link to parent MEDIA SET ID.",
+            "example" : 233743
+          },
+          "parent_media_file_id" : {
+            "type" : "integer",
+            "description" : "If non-zero, indicates unique MEDIA FILE ID this MEDIA FILE is derived from.",
+            "example" : 0
+          },
+          "media_status" : {
+            "type" : "string",
+            "description" : "Indiciates current processing status for this MEDIA FILE.",
+            "example" : "DONE"
+          },
+          "media_type" : {
+            "type" : "string",
+            "description" : "Indicates TYPE of media file (Text, Original, Enhanced, etc.)",
+            "example" : "T"
+          },
+          "url_type" : {
+            "type" : "string",
+            "description" : "Indicates if the file is LOCALLY HOSTED (\"L\") or OFF-SITE URL (\"O\").",
+            "example" : "L",
+            "enum" : [ "L", "O" ]
+          },
+          "url" : {
+            "type" : "string",
+            "description" : "Either the file name for local files, or URL path to off-site resource.",
+            "example" : "report.pdf"
+          },
+          "mime_type" : {
+            "type" : "string",
+            "description" : "Mime type describing the MEDIA FILE content.",
+            "example" : "application/pdf"
+          },
+          "added_by_user_id" : {
+            "type" : "integer",
+            "description" : "Indicates the ELINK USER ID that attached this MEDIA FILE.",
+            "example" : 999
+          },
+          "media_source" : {
+            "type" : "string",
+            "description" : "Describes method of file production or association with this media set.",
+            "example" : "TEXT_FILE_EXTRACTION"
+          },
+          "file_size_bytes" : {
+            "type" : "integer",
+            "description" : "If local file, the file size in bytes.",
+            "example" : 993834
+          },
+          "duration_seconds" : {
+            "type" : "integer",
+            "description" : "For audio-visual media, the duration of the resource in seconds.",
+            "example" : 77
+          },
+          "document_page_count" : {
+            "type" : "integer",
+            "description" : "For document-based media, the number of printed pages if applicable.",
+            "example" : 22
+          },
+          "subtitle_tracks" : {
+            "type" : "integer",
+            "description" : "Indicates the number of subtitle tracks for audio-visual media.",
+            "example" : 2
+          },
+          "video_tracks" : {
+            "type" : "integer",
+            "description" : "Indicates the number of video tracks in audio-visual media.",
+            "example" : 1
+          },
+          "date_file_added" : {
+            "type" : "string",
+            "description" : "Indicates the date and time this media file was created.",
+            "example" : "2012-08-33T15:33:22.504+0000"
+          },
+          "date_file_updated" : {
+            "type" : "string",
+            "description" : "Indicates the last date and time this media file was modified.",
+            "example" : "2013-04-22T18:33:28.234+0000"
+          }
+        }
+      },
+      "MediaSet" : {
+        "type" : "object",
+        "properties" : {
+          "media_id" : {
+            "type" : "integer",
+            "description" : "Unique ID for this MEDIA SET.",
+            "example" : 233743
+          },
+          "version" : {
+            "type" : "integer",
+            "description" : "Version number of this media association set.",
+            "example" : 3
+          },
+          "osti_id" : {
+            "type" : "integer",
+            "description" : "Links to Record OSTI_ID value for a Media Set.",
+            "example" : 99238
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Indicates current processing state or level of this set.",
+            "example" : "PROCESSING"
+          },
+          "added_by_user_id" : {
+            "type" : "integer",
+            "description" : "Indicates user ID that first added or created this media set.",
+            "example" : -33
+          },
+          "media_location" : {
+            "type" : "string",
+            "description" : "Indicates if this media set's main content is LOCAL or OFF-SITE.",
+            "example" : "L",
+            "enum" : [ "L", "O" ]
+          },
+          "media_source" : {
+            "type" : "string",
+            "description" : "Indicates the initial primary source of the media set.",
+            "example" : "WEB"
+          },
+          "date_added" : {
+            "type" : "string",
+            "description" : "Date this media set was first created. (UTC)",
+            "format" : "datetime",
+            "example" : "1992-03-08 11:23:44"
+          },
+          "date_updated" : {
+            "type" : "string",
+            "description" : "Date this media set was last modified. (UTC)",
+            "format" : "datetime",
+            "example" : "2009-11-05 08:33:12"
+          },
+          "date_valid_start" : {
+            "type" : "string",
+            "description" : "Starting date of media association. (UTC)",
+            "format" : "datetime",
+            "example" : "2021-02-13 16:32:23"
+          },
+          "date_valid_end" : {
+            "type" : "string",
+            "description" : "If present, date and time when media association was removed or replaced. (UTC)",
+            "format" : "datetime",
+            "example" : "2021-02-15 12:32:11"
+          },
+          "media_status" : {
+            "type" : "string",
+            "description" : "Current status of this media association, indicates if media was newly added, updated, or removed.\n| code | description |\n| -- | -- |\n| A | Added, first media association for this record |\n| U | Updated, media set has been modified or replaced |\n| R | Removed, media association was deleted |\n",
+            "example" : "A",
+            "enum" : [ "A", "U", "R" ]
+          },
+          "files" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/MediaFile"
+            }
+          }
+        }
+      },
+      "ErrorSet" : {
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error" : {
+        "type" : "object",
+        "properties" : {
+          "status" : {
+            "type" : "integer",
+            "description" : "HTTP status code of error response.",
+            "example" : 400
+          },
+          "detail" : {
+            "type" : "string",
+            "description" : "Detail error message of the issue.",
+            "example" : "Contract number missing."
+          },
+          "source" : {
+            "$ref" : "#/components/schemas/Error_source"
+          }
+        }
+      },
+      "Archive" : {
+        "type" : "object",
+        "properties" : {
+          "valid_date_start" : {
+            "type" : "string",
+            "description" : "Date (UTC) of this revision's inception.",
+            "format" : "date-time"
+          },
+          "valid_date_end" : {
+            "type" : "string",
+            "description" : "Date (UTC) the revision was replaced, if any; null indicates this record is the current version.",
+            "format" : "date-time"
+          }
+        },
+        "description" : "Previous version of a given Record, replaced by subsequent revisions",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/Record"
+        } ]
+      },
+      "VersionSummary" : {
+        "type" : "object",
+        "properties" : {
+          "osti_id" : {
+            "type" : "integer",
+            "description" : "OSTI ID of given record",
+            "example" : 283923
+          },
+          "biblio_version" : {
+            "type" : "integer",
+            "description" : "The specific version number of a revision",
+            "example" : 98024
+          },
+          "valid_date_start" : {
+            "type" : "string",
+            "description" : "Date (UTC) of this revision's inception.",
+            "format" : "date-time"
+          },
+          "valid_date_end" : {
+            "type" : "string",
+            "description" : "Date (UTC) the revision was replaced, if any; null indicates this record is the current version.",
+            "format" : "date-time"
+          },
+          "workflow_status" : {
+            "type" : "string",
+            "description" : "Desired status for this record at time of initial submission to OSTI.\n| code | description |\n| -- | -- |\n| SR | Submit to Releasing Official, additional required validations, must be approved to release |\n| SO | Submit to OSTI, releasing official approval level. At this level, record processing and release begins |\n| R | Released, record has been successfully processed |",
+            "example" : "SO",
+            "enum" : [ "R", "SR", "SO" ]
+          }
+        }
+      },
+      "media_id_body" : {
+        "type" : "object",
+        "properties" : {
+          "url" : {
+            "type" : "string",
+            "description" : "The URL link to the media or landing page describing the media related to this product.",
+            "example" : "https://library.datasets.org/product/media/89934"
+          }
+        }
+      },
+      "media_id_body_1" : {
+        "type" : "object",
+        "properties" : {
+          "file" : {
+            "type" : "string",
+            "description" : "File content to associate with the metadata.",
+            "format" : "binary"
+          }
+        }
+      },
+      "Geolocation_points" : {
+        "type" : "object",
+        "properties" : {
+          "latitude" : {
+            "type" : "integer",
+            "description" : "Latitude of this point in the geolocation; limited to -90 to 90, inclusive."
+          },
+          "longitude" : {
+            "type" : "integer",
+            "description" : "Longitude of this point in the geolocation; limited to -180 to 180, inclusive."
+          }
+        }
+      },
+      "Error_source" : {
+        "type" : "object",
+        "properties" : {
+          "pointer" : {
+            "type" : "string",
+            "description" : "JSON pointer indicating location in error.",
+            "example" : "/identifiers"
+          }
+        }
+      }
+    }
+  }
+}
