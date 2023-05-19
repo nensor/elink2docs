@@ -2036,30 +2036,6 @@
           }
         }
       },
-      "OrganizationIdentifier" : {
-        "type" : "object",
-        "properties" : {
-          "type" : {
-            "$ref" : "#/components/schemas/IdentifierType"
-          },
-          "value" : {
-            "type" : "string",
-            "description" : "Value of this identifier",
-            "example" : "CN-002-329034"
-          },
-          "uri" : {
-            "type" : "string",
-            "description" : "link to further information about award if applicable (DOI or URL)",
-            "format" : "uri",
-            "example" : "https://doi.org/10.15582/exjiw234"
-          },
-          "title" : {
-            "type" : "string",
-            "description" : "Optional title or description for this identifier or award",
-            "example" : "Miller Research Grant"
-          }
-        }
-      },
       "Organization" : {
         "type" : "object",
         "properties" : {
@@ -2096,7 +2072,7 @@
             "type" : "array",
             "description" : "List of any identifiers for this Organization",
             "items" : {
-              "$ref" : "#/components/schemas/OrganizationIdentifier"
+              "$ref" : "#/components/schemas/Identifier"
             }
           }
         }
