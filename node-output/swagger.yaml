@@ -11,7 +11,7 @@
       "name" : "Apache 2.0",
       "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "version" : "2.0.0"
+    "version" : "2.3.0"
   },
   "servers" : [ {
     "url" : "/"
@@ -2019,12 +2019,20 @@
           "type" : {
             "$ref" : "#/components/schemas/IdentifierType"
           },
-          "values" : {
-            "type" : "array",
-            "description" : "Array of identifier values for this type",
-            "items" : {
-              "type" : "string"
-            }
+          "value" : {
+            "type" : "string",
+            "description" : "Value of this identifier"
+          },
+          "uri" : {
+            "type" : "string",
+            "description" : "link to further information about award if applicable (DOI or URL)",
+            "format" : "uri",
+            "example" : "https://doi.org/10.15582/exjiw234"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Optional title or description for this identifier or award",
+            "example" : "Miller Research Grant"
           }
         }
       },
@@ -2034,12 +2042,21 @@
           "type" : {
             "$ref" : "#/components/schemas/IdentifierType"
           },
-          "values" : {
-            "type" : "array",
-            "description" : "Array of identifier values for this type",
-            "items" : {
-              "type" : "string"
-            }
+          "value" : {
+            "type" : "string",
+            "description" : "Value of this identifier",
+            "example" : "CN-002-329034"
+          },
+          "uri" : {
+            "type" : "string",
+            "description" : "link to further information about award if applicable (DOI or URL)",
+            "format" : "uri",
+            "example" : "https://doi.org/10.15582/exjiw234"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Optional title or description for this identifier or award",
+            "example" : "Miller Research Grant"
           }
         }
       },
@@ -2210,7 +2227,7 @@
           },
           "access_limitations" : {
             "type" : "array",
-            "description" : "Access limitation codes to describe the distribution rules and limitations for this work.\n\n| code | description |\n| -- | -- |\n| UNL | Unlimited announcement |\n| OPN | OpenNET (requires OpenNET attributes) |\n| CPY | Copyright restricted material |\n| OUO | Official use only |\n| ECI | Export-controlled information |\n| SSI | Security sensitive information |\n| PROT | Protected data (e.g., CRADA, additional information required) |\n| PAT | Patented information |\n| LRD | Limited Rights Data |\n| PDOUO | Program-determined OUO |\n| NNPI | Naval Navigation Propulsion Info |\n| INTL | International data |\n\nMost access limitations beyond UNL will require additional information for\ndefinitions in other required fields. Note that only certain combinations\nof access limitations are valid.\n",
+            "description" : "Access limitation codes to describe the distribution rules and limitations for this work.\n\n| code | description |\n| -- | -- |\n| UNL | Unlimited announcement |\n| OPN | OpenNET (requires OpenNET attributes) |\n| CPY | Copyright restricted material |\n| CUI | Controlled Unclassified Information |\n| OUO | Official use only |\n| ECI | Export-controlled information |\n| SSI | Security sensitive information |\n| PROT | Protected data (e.g., CRADA, additional information required) |\n| PAT | Patented information |\n| LRD | Limited Rights Data |\n| PDOUO | Program-determined OUO |\n| NNPI | Naval Navigation Propulsion Info |\n| INTL | International data |\n\nMost access limitations beyond UNL will require additional information for\ndefinitions in other required fields. Note that only certain combinations\nof access limitations are valid.\n",
             "example" : [ "UNL", "OPN" ],
             "items" : {
               "type" : "string",
@@ -2666,6 +2683,42 @@
             "items" : {
               "$ref" : "#/components/schemas/RelatedIdentifier"
             }
+          },
+          "added_version" : {
+            "type" : "integer",
+            "description" : "Version number of initial version of this record"
+          },
+          "updated_version" : {
+            "type" : "integer",
+            "description" : "Version number of the latest version of this record"
+          },
+          "first_submitted_to_osti_version" : {
+            "type" : "integer",
+            "description" : "First version number of record submitted to OSTI (if any)"
+          },
+          "last_submitted_to_osti_version" : {
+            "type" : "integer",
+            "description" : "Last version number of record submitted to OSTI (if any)"
+          },
+          "first_released_version" : {
+            "type" : "integer",
+            "description" : "First version number of record successfully releasing (if any)"
+          },
+          "last_released_version" : {
+            "type" : "integer",
+            "description" : "Latest version number of record successfully releasing (if any)"
+          },
+          "doi_status" : {
+            "type" : "string",
+            "description" : "Registration response status for record, if applicable, of latest \nreleased version of the record.\n| value | description |\n| --- | --- |\n| OK | This submission completed with registrar successfully |\n| FAIL | Latest submission did not complete |\n"
+          },
+          "registration_authority" : {
+            "type" : "string",
+            "description" : "DOI registrar authority, if any, for this record's DOI value.\n| value | description |\n| --- | --- |\n| CROSSREF | Crossref DOI registration |\n| DATACITE | Datacite DOI registration |\n"
+          },
+          "doi_source" : {
+            "type" : "string",
+            "description" : "Origination of DOI on this record, if applicable.\n| value | description |\n| --- | --- |\n| OSTI | DOI value issued by and maintained by OSTI |\n| METADATA | DOI value supplied by submitter |\n| QUERY | DOI value was found to be assigned elsewhere for this record |\n"
           },
           "url" : {
             "type" : "string",
