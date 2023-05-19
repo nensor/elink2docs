@@ -563,10 +563,10 @@
                 "publication_date" : "02/18/2019",
                 "identifiers" : [ {
                   "type" : "RN",
-                  "values" : [ "RN/2019-238942" ]
+                  "value" : "RN/2019-238942"
                 }, {
                   "type" : "CN_DOE",
-                  "values" : [ "AG03-GX-2019238943" ]
+                  "value" : "AG03-GX-2019238943"
                 } ],
                 "persons" : [ {
                   "first_name" : "Arthur",
@@ -607,10 +607,10 @@
                   "publication_date" : "02/18/2019",
                   "identifiers" : [ {
                     "type" : "RN",
-                    "values" : [ "RN/2019-238942" ]
+                    "value" : "RN/2019-238942"
                   }, {
                     "type" : "CN_DOE",
-                    "values" : [ "AG03-GX-2019238943" ]
+                    "value" : "AG03-GX-2019238943"
                   } ],
                   "persons" : [ {
                     "first_name" : "Arthur",
