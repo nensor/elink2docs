@@ -1988,200 +1988,6 @@
   },
   "components" : {
     "schemas" : {
-      "OrganizationType" : {
-        "type" : "string",
-        "description" : "Indicates type of organization:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|COLLAB|Collaborator Organizations|\n|CONTRIB|Contributing Organizations|\n|FUNDER|Funders with Award DOIs|\n|ORIG_RES|Originating Research Organizations|\n|SPONSOR|Sponsoring Organizations|\n",
-        "enum" : [ "AUTHOR", "CONTRIB", "COLLAB", "FUNDER", "ORIG_RES", "SPONSOR" ]
-      },
-      "PersonType" : {
-        "type" : "string",
-        "description" : "Indicates type of person:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|CONTACT|Contact Information|\n|CONTRIB|Contributor|\n|RELEASE|Releasing Official|\n|SBIZ_BO|SBIR/STTR Business Official|\n|SBIZ_PI|SBIR/STTR Principal Investigator|\n",
-        "enum" : [ "AUTHOR", "RELEASE", "CONTACT", "CONTRIB", "SBIZ_PI", "SBIZ_BO" ]
-      },
-      "ContributorType" : {
-        "type" : "string",
-        "description" : "Describes the type of contribution to the work.\n|code|description|\n|----|-----------|\n|ContactPerson|Person with knowledge of how to access, troubleshoot, or otherwise field issues related to the resource.|\n|DataCollector|Person/institution responsible for finding or gathering data under the guidelines of the author(s) or Principal Investigator.|\n|DataCurator|Person tasked with reviewing, enhancing, cleaning, or standardizing metadata and the associated data submitted.|\n|DataManager|Person (or organisation with a staff of data managers, such as a data centre) responsible for maintaining the finished resource.|\n|Distributor|Institution tasked with responsibility to generate/disseminate copies of the resource in either electronic or print form.|\n|Editor|A person who oversees the details related to the publication format of the resource.|\n|HostingInstitution|The organisation allowing the resource to be available on the internet.|\n|Producer|Typically a person or organisation responsible for the artistry and form of a media product.|\n|ProjectLeader|Person officially designated as head of project team instrumental in the work necessary to development of the resource.|\n|ProjectManager|Person officially designated as manager of a project. Project may consist of one or many project teams and sub-teams.|\n|ProjectMember|Person on the membership list of a designated project/project team.|\n|RegistrationAgency|Institution officially appointed by a Registration Authority to handle specific tasks within a defined area of responsibility.|\n|RegistrationAuthority|A standards-setting body from which Registration Agencies obtain official recognition and guidance.|\n|RelatedPerson|Person with no specifically defined role in the development of the resource, but who is someone the author wishes to recognize.|\n|Researcher|A person involved in analyzing data or the results of an experiment or formal study.|\n|ResearchGroup|Refers to a group of individuals with a lab, department, or division; the group has a particular, defined focus of activity.|\n|RightsHolder|Person or institution owning or managing property rights, including intellectual property rights over the resource.|\n|Sponsor|Person or organisation that issued a contract or under the auspices of which a work has been performed.|\n|Supervisor|Designated administrator over one or more groups working to produce a resource or over one or more steps of development process.|\n|WorkPackageLeader|A Work Package is a recognized data product, not all of which is included in publication.|\n|Other|Any person or institution making a significant contribution, but whose contribution does not \"fit\".|\n",
-        "enum" : [ "ContactPerson", "DataCollector", "DataCurator", "DataManager", "Distributor", "Editor", "HostingInstitution", "Producer", "ProjectLeader", "ProjectManager", "ProjectMember", "RegistrationAgency", "RegistrationAuthority", "RelatedPerson", "Researcher", "ResearchGroup", "RightsHolder", "Sponsor", "Supervisor", "WorkPackageLeader", "Other" ]
-      },
-      "RelationType" : {
-        "type" : "string",
-        "description" : "Indicates the relationship between this identifier and the source record.\n|code|description|\n|----|-----------|\n|Cites|indicates that A includes B in a citation|\n|Compiles|indicates B is the result of a compile or creation event using A|\n|Continues|indicates A is a continuation of the work B|\n|Describes|indicates A describes B|\n|Documents|indicates A is documentation about/B|\n|HasMetadata|indicates resource A has additional metadata B|\n|HasPart|indicates A includes the part B|\n|HasVersion|indicates A has a version of B|\n|IsCitedBy|indicates that B includes A in a citation|\n|IsCompiledBy|indicates B is used to compile or create A|\n|IsContinuedBy|indicates A is continued by the work B|\n|IsDerivedFrom|indicates B is a source upon which A is based|\n|IsDescribedBy|Indicates A is described by B|\n|IsDocumentedBy|indicates B is documentation about/explaining A|\n|IsIdenticalTo|indicates that A is identical to B, for use when there is a need to register two separate instances of the same resource|\n|IsMetadataFor|indicates additional metadata A for a resource B|\n|IsNewVersionOf|indicates A is a new edition of B, where the new edition has been modified or updated|\n|IsObsoletedBy|Indicates A is replaced by B|\n|IsOriginalFormOf|indicates A is the original form of B|\n|IsPartOf|indicates A is a portion of B; may be used for elements of a series|\n|IsPreviousVersionOf|indicates A is a previous edition of B|\n|IsReferencedBy|indicates A is used as a source of information by B|\n|IsRequiredBy|inidcates A is required by B|\n|IsReviewedBy|indicates that A is reviewed by B|\n|IsSourceOf|indicates A is a source upon which B is based|\n|IsSupplementTo|indicates that A is a supplement to B|\n|IsSupplementedBy|indicates that B is a supplement to A|\n|IsVariantFormOf|indicates A is a variant or different form of B, e.g. calculated or calibrated form or different packaging|\n|IsVersionOf|indicates A is a version of B|\n|Obsoletes|Indicates A replaces B|\n|References|indicates B is used as a source of information for A|\n|Requires|indicates A requires B|\n|Reviews|indicates that A is a review of B|\n",
-        "enum" : [ "IsDescribedBy", "Describes", "HasVersion", "IsVersionOf", "IsRequiredBy", "Requires", "Obsoletes", "IsObsoletedBy", "IsCitedBy", "Cites", "IsSupplementTo", "IsSupplementedBy", "IsContinuedBy", "Continues", "HasMetadata", "IsMetadataFor", "IsNewVersionOf", "IsPreviousVersionOf", "IsPartOf", "HasPart", "IsReferencedBy", "References", "IsDocumentedBy", "Documents", "IsCompiledBy", "Compiles", "IsVariantFormOf", "IsOriginalFormOf", "IsIdenticalTo", "IsReviewedBy", "Reviews", "IsDerivedFrom", "IsSourceOf" ]
-      },
-      "IdentifierType" : {
-        "type" : "string",
-        "description" : "Describe the type of identifier:\n|code | description|\n|-------|-------|\n|AUTH_REV |Authorization Revision Number|\n|CN_DOE |DOE Contract Number|\n|CN_NONDOE |Non DOE Contract Number|\n|CODEN |CODEN|\n|DOE_DOCKET | DOE Docket Number|\n|EDB |EDB Number|\n|ETDE_RN |ETDE Reference Number|\n|INIS_RN |INIS Reference Number|\n|ISSN |ISSN|\n|LEGACY |Legacy Identifier|\n|NSA |NSA Number|\n|OPN_ACC |Opennet Accession Number|\n|OTHER_ID |Other Identifying Number|\n|PATENT |Patent Number|\n|PROJ_ID |Research and Development Project Identifier|\n|PROP_REV |Proposal Revision Number|\n|REF |Reference Numbers|\n|REL_TRN |Related ETDE Technical Reference Number.|\n|RN |Report Number|\n|TRN |ETDE Technical Report Number|\n|TVI |Tape Volume Issue Number|\n|USER_VER |User Entered Version Number|\n|WORK_AUTH |Work Authorization Number|\n|WORK_PROP |Work Proposal Number|\n",
-        "enum" : [ "AUTH_REV", "CN_DOE", "CN_NONDOE", "CODEN", "DOE_DOCKET", "EDB", "ETDE_RN", "INIS_RN", "ISSN", "LEGACY", "NSA", "OPN_ACC", "OTHER_ID", "PATENT", "PROJ_ID", "PROP_REV", "REF", "REL_TRN", "RN", "TRN", "TVI", "USER_VER", "WORK_AUTH", "WORK_PROP" ]
-      },
-      "Identifier" : {
-        "type" : "object",
-        "properties" : {
-          "type" : {
-            "$ref" : "#/components/schemas/IdentifierType"
-          },
-          "value" : {
-            "type" : "string",
-            "description" : "Value of this identifier"
-          },
-          "uri" : {
-            "type" : "string",
-            "description" : "link to further information about award if applicable (DOI or URL)",
-            "format" : "uri",
-            "example" : "https://doi.org/10.15582/exjiw234"
-          },
-          "title" : {
-            "type" : "string",
-            "description" : "Optional title or description for this identifier or award",
-            "example" : "Miller Research Grant"
-          }
-        }
-      },
-      "Organization" : {
-        "type" : "object",
-        "properties" : {
-          "type" : {
-            "$ref" : "#/components/schemas/OrganizationType"
-          },
-          "name" : {
-            "type" : "string",
-            "description" : "Name of the organization",
-            "example" : "Quantum Physics of America, Inc."
-          },
-          "organization_id" : {
-            "type" : "integer",
-            "description" : "Unique identifying number of this organization"
-          },
-          "country" : {
-            "type" : "string",
-            "description" : "Country code indicating the base of operations for this organization",
-            "example" : "US"
-          },
-          "ror" : {
-            "type" : "string",
-            "description" : "Research Organization Registry identifier for this organization",
-            "example" : "8jg9902x"
-          },
-          "funder_id" : {
-            "type" : "string",
-            "description" : "Funding identifier for this organization"
-          },
-          "contributor_type" : {
-            "$ref" : "#/components/schemas/ContributorType"
-          },
-          "identifiers" : {
-            "type" : "array",
-            "description" : "List of any identifiers for this Organization",
-            "items" : {
-              "$ref" : "#/components/schemas/Identifier"
-            }
-          }
-        }
-      },
-      "RelatedIdentifier" : {
-        "type" : "object",
-        "properties" : {
-          "type" : {
-            "type" : "string",
-            "description" : "Identify the type of this related identifier\n|Code |Description|\n|----|-----------|\n|URL|Uniform Resource Locator|\n|URN|Uniform Resource Name|\n|UPC|Universal Product Code/Barcode|\n|PURL|Persistent Uniform Resource Locator|\n|PMID|PubMed ID|\n|LSID|Life Science Identifier|\n|LISSN|Linking ISSN|\n|ISTC|International Standard Text Code|\n|ISSN| International Standard Serial Number|\n|ISGN|International Geo Sample Number |\n|ISBN|International Standard Book Number|\n|Handle|Handle ID (Corporation for National Research Initiatives)|\n|EISSN|Electronic International Standard Serial Number|\n|EAN13|European Article Number (renamed International Article Number) |\n|DOI|DOI|\n|bibcode|Astrophysics Data System bibliographic codes|\n|arXiv|arXiv identifier|\n|ARK|Archival Resource Key|\n",
-            "example" : "DOI",
-            "enum" : [ "DOI", "URL", "URN", "UPC", "PURL", "PMID", "LSID", "LISSN", "ISTC", "ISSN", "ISGN", "ISBN", "Handle", "EISSN", "EAN13", "bibcode", "arXiv", "ARK" ]
-          },
-          "relation" : {
-            "$ref" : "#/components/schemas/RelationType"
-          },
-          "value" : {
-            "type" : "string",
-            "description" : "The value of the identifier",
-            "example" : "10.11578/2020/28383"
-          }
-        },
-        "description" : "Identifies other resources that are related in some manner to this record"
-      },
-      "AffiliationType" : {
-        "type" : "object",
-        "properties" : {
-          "name" : {
-            "type" : "string",
-            "description" : "Name of laboratory, university, etc. person is affiliated with",
-            "example" : "ACME Laboratories, LLC"
-          },
-          "country" : {
-            "type" : "string",
-            "description" : "Country code for location on this affiliation",
-            "example" : "US"
-          },
-          "organization_id" : {
-            "type" : "integer",
-            "description" : "ID reference used for OSTI identification of affiliation"
-          },
-          "ror" : {
-            "type" : "string",
-            "description" : "Research Organization Registry identifier for affiliation if any. (see https://ror.org/).",
-            "example" : "0r273g"
-          },
-          "funder_id" : {
-            "type" : "integer",
-            "description" : "ID reference for funder affiliations used by OSTI"
-          }
-        },
-        "description" : "Information about affiliations for a person."
-      },
-      "Person" : {
-        "type" : "object",
-        "properties" : {
-          "type" : {
-            "$ref" : "#/components/schemas/PersonType"
-          },
-          "first_name" : {
-            "type" : "string",
-            "description" : "First (or \"Given\") name of the person",
-            "example" : "Sample"
-          },
-          "middle_name" : {
-            "type" : "string",
-            "description" : "Middle name or initial of the person",
-            "example" : "Q."
-          },
-          "last_name" : {
-            "type" : "string",
-            "description" : "Last (or \"Family\") name of this person",
-            "example" : "Person"
-          },
-          "email" : {
-            "type" : "array",
-            "description" : "List of any email address(es) associated with this person",
-            "example" : [ "persons@sample.org" ],
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "orcid" : {
-            "type" : "string",
-            "description" : "ORCID (https://orcid.org/) value for this person",
-            "example" : "0000-0001-2345-6789"
-          },
-          "phone" : {
-            "type" : "string",
-            "description" : "Contact phone number for this person",
-            "example" : "(555) 860-9923"
-          },
-          "osti_user_id" : {
-            "type" : "integer",
-            "description" : "OSTI-assigned identifier for this person, if any"
-          },
-          "contributor_type" : {
-            "$ref" : "#/components/schemas/ContributorType"
-          },
-          "affiliations" : {
-            "type" : "array",
-            "description" : "List of any affiliations for this person",
-            "items" : {
-              "$ref" : "#/components/schemas/AffiliationType"
-            }
-          }
-        },
-        "description" : "Information about a particular person involved in the production or maintenance of this record"
-      },
       "Record" : {
         "type" : "object",
         "properties" : {
@@ -2701,7 +2507,203 @@
             "description" : "Optionally, a link to product, landing page, or technical report described by this record.  If the product or report is to be hosted by OSTI, the media itself should be uploaded through the API media interfaces once the metadata information has been entered and the OSTI ID obtained.",
             "format" : "uri"
           }
+        },
+        "description" : "Defines the bibliographic metadata about a particular work or record.  Depending on product type, various elements are permitted, not permitted, or required."
+      },
+      "Organization" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "$ref" : "#/components/schemas/OrganizationType"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Name of the organization",
+            "example" : "Quantum Physics of America, Inc."
+          },
+          "organization_id" : {
+            "type" : "integer",
+            "description" : "Unique identifying number of this organization"
+          },
+          "country" : {
+            "type" : "string",
+            "description" : "Country code indicating the base of operations for this organization",
+            "example" : "US"
+          },
+          "ror" : {
+            "type" : "string",
+            "description" : "Research Organization Registry identifier for this organization",
+            "example" : "8jg9902x"
+          },
+          "funder_id" : {
+            "type" : "string",
+            "description" : "Funding identifier for this organization"
+          },
+          "contributor_type" : {
+            "$ref" : "#/components/schemas/ContributorType"
+          },
+          "identifiers" : {
+            "type" : "array",
+            "description" : "List of any identifiers for this Organization",
+            "items" : {
+              "$ref" : "#/components/schemas/Identifier"
+            }
+          }
+        },
+        "description" : "Describes a particular organization associated with the bibliographic record.  Organizations may be author collaborations, sponsors, research laboratories, or contributors to the work, as indicated by their associated type."
+      },
+      "OrganizationType" : {
+        "type" : "string",
+        "description" : "Indicates type of organization:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|COLLAB|Collaborator Organizations|\n|CONTRIB|Contributing Organizations|\n|FUNDER|Funders with Award DOIs|\n|ORIG_RES|Originating Research Organizations|\n|SPONSOR|Sponsoring Organizations|\n",
+        "enum" : [ "AUTHOR", "CONTRIB", "COLLAB", "FUNDER", "ORIG_RES", "SPONSOR" ]
+      },
+      "Person" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "$ref" : "#/components/schemas/PersonType"
+          },
+          "first_name" : {
+            "type" : "string",
+            "description" : "First (or \"Given\") name of the person",
+            "example" : "Sample"
+          },
+          "middle_name" : {
+            "type" : "string",
+            "description" : "Middle name or initial of the person",
+            "example" : "Q."
+          },
+          "last_name" : {
+            "type" : "string",
+            "description" : "Last (or \"Family\") name of this person",
+            "example" : "Person"
+          },
+          "email" : {
+            "type" : "array",
+            "description" : "List of any email address(es) associated with this person",
+            "example" : [ "persons@sample.org" ],
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "orcid" : {
+            "type" : "string",
+            "description" : "ORCID (https://orcid.org/) value for this person",
+            "example" : "0000-0001-2345-6789"
+          },
+          "phone" : {
+            "type" : "string",
+            "description" : "Contact phone number for this person",
+            "example" : "(555) 860-9923"
+          },
+          "osti_user_id" : {
+            "type" : "integer",
+            "description" : "OSTI-assigned identifier for this person, if any"
+          },
+          "contributor_type" : {
+            "$ref" : "#/components/schemas/ContributorType"
+          },
+          "affiliations" : {
+            "type" : "array",
+            "description" : "List of any affiliations for this person",
+            "items" : {
+              "$ref" : "#/components/schemas/AffiliationType"
+            }
+          }
+        },
+        "description" : "Information about a particular person involved in the production or maintenance of this record"
+      },
+      "AffiliationType" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "Name of laboratory, university, etc. person is affiliated with",
+            "example" : "ACME Laboratories, LLC"
+          },
+          "country" : {
+            "type" : "string",
+            "description" : "Country code for location on this affiliation",
+            "example" : "US"
+          },
+          "organization_id" : {
+            "type" : "integer",
+            "description" : "ID reference used for OSTI identification of affiliation"
+          },
+          "ror" : {
+            "type" : "string",
+            "description" : "Research Organization Registry identifier for affiliation if any. (see https://ror.org/).",
+            "example" : "0r273g"
+          },
+          "funder_id" : {
+            "type" : "integer",
+            "description" : "ID reference for funder affiliations used by OSTI"
+          }
+        },
+        "description" : "Information about affiliations for a person."
+      },
+      "PersonType" : {
+        "type" : "string",
+        "description" : "Indicates type of person:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|CONTACT|Contact Information|\n|CONTRIB|Contributor|\n|RELEASE|Releasing Official|\n|SBIZ_BO|SBIR/STTR Business Official|\n|SBIZ_PI|SBIR/STTR Principal Investigator|\n",
+        "enum" : [ "AUTHOR", "RELEASE", "CONTACT", "CONTRIB", "SBIZ_PI", "SBIZ_BO" ]
+      },
+      "ContributorType" : {
+        "type" : "string",
+        "description" : "Describes the type of contribution to the work.\n|code|description|\n|----|-----------|\n|ContactPerson|Person with knowledge of how to access, troubleshoot, or otherwise field issues related to the resource.|\n|DataCollector|Person/institution responsible for finding or gathering data under the guidelines of the author(s) or Principal Investigator.|\n|DataCurator|Person tasked with reviewing, enhancing, cleaning, or standardizing metadata and the associated data submitted.|\n|DataManager|Person (or organisation with a staff of data managers, such as a data centre) responsible for maintaining the finished resource.|\n|Distributor|Institution tasked with responsibility to generate/disseminate copies of the resource in either electronic or print form.|\n|Editor|A person who oversees the details related to the publication format of the resource.|\n|HostingInstitution|The organisation allowing the resource to be available on the internet.|\n|Producer|Typically a person or organisation responsible for the artistry and form of a media product.|\n|ProjectLeader|Person officially designated as head of project team instrumental in the work necessary to development of the resource.|\n|ProjectManager|Person officially designated as manager of a project. Project may consist of one or many project teams and sub-teams.|\n|ProjectMember|Person on the membership list of a designated project/project team.|\n|RegistrationAgency|Institution officially appointed by a Registration Authority to handle specific tasks within a defined area of responsibility.|\n|RegistrationAuthority|A standards-setting body from which Registration Agencies obtain official recognition and guidance.|\n|RelatedPerson|Person with no specifically defined role in the development of the resource, but who is someone the author wishes to recognize.|\n|Researcher|A person involved in analyzing data or the results of an experiment or formal study.|\n|ResearchGroup|Refers to a group of individuals with a lab, department, or division; the group has a particular, defined focus of activity.|\n|RightsHolder|Person or institution owning or managing property rights, including intellectual property rights over the resource.|\n|Sponsor|Person or organisation that issued a contract or under the auspices of which a work has been performed.|\n|Supervisor|Designated administrator over one or more groups working to produce a resource or over one or more steps of development process.|\n|WorkPackageLeader|A Work Package is a recognized data product, not all of which is included in publication.|\n|Other|Any person or institution making a significant contribution, but whose contribution does not \"fit\".|\n",
+        "enum" : [ "ContactPerson", "DataCollector", "DataCurator", "DataManager", "Distributor", "Editor", "HostingInstitution", "Producer", "ProjectLeader", "ProjectManager", "ProjectMember", "RegistrationAgency", "RegistrationAuthority", "RelatedPerson", "Researcher", "ResearchGroup", "RightsHolder", "Sponsor", "Supervisor", "WorkPackageLeader", "Other" ]
+      },
+      "RelatedIdentifier" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "description" : "Identify the type of this related identifier\n|Code |Description|\n|----|-----------|\n|URL|Uniform Resource Locator|\n|URN|Uniform Resource Name|\n|UPC|Universal Product Code/Barcode|\n|PURL|Persistent Uniform Resource Locator|\n|PMID|PubMed ID|\n|LSID|Life Science Identifier|\n|LISSN|Linking ISSN|\n|ISTC|International Standard Text Code|\n|ISSN| International Standard Serial Number|\n|ISGN|International Geo Sample Number |\n|ISBN|International Standard Book Number|\n|Handle|Handle ID (Corporation for National Research Initiatives)|\n|EISSN|Electronic International Standard Serial Number|\n|EAN13|European Article Number (renamed International Article Number) |\n|DOI|DOI|\n|bibcode|Astrophysics Data System bibliographic codes|\n|arXiv|arXiv identifier|\n|ARK|Archival Resource Key|\n",
+            "example" : "DOI",
+            "enum" : [ "DOI", "URL", "URN", "UPC", "PURL", "PMID", "LSID", "LISSN", "ISTC", "ISSN", "ISGN", "ISBN", "Handle", "EISSN", "EAN13", "bibcode", "arXiv", "ARK" ]
+          },
+          "relation" : {
+            "$ref" : "#/components/schemas/RelationType"
+          },
+          "value" : {
+            "type" : "string",
+            "description" : "The value of the identifier",
+            "example" : "10.11578/2020/28383"
+          }
+        },
+        "description" : "Identifies other resources that are related in some manner to this record"
+      },
+      "RelationType" : {
+        "type" : "string",
+        "description" : "Indicates the relationship between this identifier and the source record.\n|code|description|\n|----|-----------|\n|Cites|indicates that A includes B in a citation|\n|Compiles|indicates B is the result of a compile or creation event using A|\n|Continues|indicates A is a continuation of the work B|\n|Describes|indicates A describes B|\n|Documents|indicates A is documentation about/B|\n|HasMetadata|indicates resource A has additional metadata B|\n|HasPart|indicates A includes the part B|\n|HasVersion|indicates A has a version of B|\n|IsCitedBy|indicates that B includes A in a citation|\n|IsCompiledBy|indicates B is used to compile or create A|\n|IsContinuedBy|indicates A is continued by the work B|\n|IsDerivedFrom|indicates B is a source upon which A is based|\n|IsDescribedBy|Indicates A is described by B|\n|IsDocumentedBy|indicates B is documentation about/explaining A|\n|IsIdenticalTo|indicates that A is identical to B, for use when there is a need to register two separate instances of the same resource|\n|IsMetadataFor|indicates additional metadata A for a resource B|\n|IsNewVersionOf|indicates A is a new edition of B, where the new edition has been modified or updated|\n|IsObsoletedBy|Indicates A is replaced by B|\n|IsOriginalFormOf|indicates A is the original form of B|\n|IsPartOf|indicates A is a portion of B; may be used for elements of a series|\n|IsPreviousVersionOf|indicates A is a previous edition of B|\n|IsReferencedBy|indicates A is used as a source of information by B|\n|IsRequiredBy|inidcates A is required by B|\n|IsReviewedBy|indicates that A is reviewed by B|\n|IsSourceOf|indicates A is a source upon which B is based|\n|IsSupplementTo|indicates that A is a supplement to B|\n|IsSupplementedBy|indicates that B is a supplement to A|\n|IsVariantFormOf|indicates A is a variant or different form of B, e.g. calculated or calibrated form or different packaging|\n|IsVersionOf|indicates A is a version of B|\n|Obsoletes|Indicates A replaces B|\n|References|indicates B is used as a source of information for A|\n|Requires|indicates A requires B|\n|Reviews|indicates that A is a review of B|\n",
+        "enum" : [ "IsDescribedBy", "Describes", "HasVersion", "IsVersionOf", "IsRequiredBy", "Requires", "Obsoletes", "IsObsoletedBy", "IsCitedBy", "Cites", "IsSupplementTo", "IsSupplementedBy", "IsContinuedBy", "Continues", "HasMetadata", "IsMetadataFor", "IsNewVersionOf", "IsPreviousVersionOf", "IsPartOf", "HasPart", "IsReferencedBy", "References", "IsDocumentedBy", "Documents", "IsCompiledBy", "Compiles", "IsVariantFormOf", "IsOriginalFormOf", "IsIdenticalTo", "IsReviewedBy", "Reviews", "IsDerivedFrom", "IsSourceOf" ]
+      },
+      "Identifier" : {
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "$ref" : "#/components/schemas/IdentifierType"
+          },
+          "value" : {
+            "type" : "string",
+            "description" : "Value of this identifier"
+          },
+          "uri" : {
+            "type" : "string",
+            "description" : "link to further information about award if applicable (DOI or URL)",
+            "format" : "uri",
+            "example" : "https://doi.org/10.15582/exjiw234"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Optional title or description for this identifier or award",
+            "example" : "Miller Research Grant"
+          }
         }
+      },
+      "IdentifierType" : {
+        "type" : "string",
+        "description" : "Describe the type of identifier:\n|code | description|\n|-------|-------|\n|AUTH_REV |Authorization Revision Number|\n|CN_DOE |DOE Contract Number|\n|CN_NONDOE |Non DOE Contract Number|\n|CODEN |CODEN|\n|DOE_DOCKET | DOE Docket Number|\n|EDB |EDB Number|\n|ETDE_RN |ETDE Reference Number|\n|INIS_RN |INIS Reference Number|\n|ISSN |ISSN|\n|LEGACY |Legacy Identifier|\n|NSA |NSA Number|\n|OPN_ACC |Opennet Accession Number|\n|OTHER_ID |Other Identifying Number|\n|PATENT |Patent Number|\n|PROJ_ID |Research and Development Project Identifier|\n|PROP_REV |Proposal Revision Number|\n|REF |Reference Numbers|\n|REL_TRN |Related ETDE Technical Reference Number.|\n|RN |Report Number|\n|TRN |ETDE Technical Report Number|\n|TVI |Tape Volume Issue Number|\n|USER_VER |User Entered Version Number|\n|WORK_AUTH |Work Authorization Number|\n|WORK_PROP |Work Proposal Number|\n",
+        "enum" : [ "AUTH_REV", "CN_DOE", "CN_NONDOE", "CODEN", "DOE_DOCKET", "EDB", "ETDE_RN", "INIS_RN", "ISSN", "LEGACY", "NSA", "OPN_ACC", "OTHER_ID", "PATENT", "PROJ_ID", "PROP_REV", "REF", "REL_TRN", "RN", "TRN", "TVI", "USER_VER", "WORK_AUTH", "WORK_PROP" ]
       },
       "Geolocation" : {
         "type" : "object",
