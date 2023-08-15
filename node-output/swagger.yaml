@@ -2538,8 +2538,8 @@
       },
       "OrganizationType" : {
         "type" : "string",
-        "description" : "Indicates type of organization:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|COLLAB|Collaborator Organizations|\n|CONTRIB|Contributing Organizations|\n|FUNDER|Funders with Award DOIs|\n|ORIG_RES|Originating Research Organizations|\n|SPONSOR|Sponsoring Organizations|\n",
-        "enum" : [ "AUTHOR", "CONTRIB", "COLLAB", "FUNDER", "ORIG_RES", "SPONSOR" ]
+        "description" : "Indicates type of organization:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|COLLAB|Collaborator Organizations|\n|CONTRIB|Contributing Organizations|\n|FUNDER|Funders with Award DOIs|\n|INST|Institution for Publication or Presentation|\n|ORIG_RES|Originating Research Organizations|\n|SPONSOR|Sponsoring Organizations|\n",
+        "enum" : [ "AUTHOR", "CONTRIB", "COLLAB", "FUNDER", "INST", "ORIG_RES", "SPONSOR" ]
       },
       "Person" : {
         "type" : "object",
