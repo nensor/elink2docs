@@ -869,7 +869,7 @@
       "summary" : "Interact with media associated with this OSTI ID, if any.",
       "get" : {
         "tags" : [ "record media" ],
-        "description" : "Obtain JSON of ALL media ever associated with OSTI ID, including historical or past versions of media.  Media association sets will be returned in reverse chronological order, with most recent sets first.  Each set will include the defined date range when the association was active, as well as a status code indicating if it was added, replaced, or removed.",
+        "description" : "Information about any currently associated media (files or URLs) associated with the OSTI ID.  This will include current processing state as well as any associated derived files from the original attached media (text extracted, etc.)",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -2538,8 +2538,8 @@
       },
       "OrganizationType" : {
         "type" : "string",
-        "description" : "Indicates type of organization:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|COLLAB|Collaborator Organizations|\n|CONTRIB|Contributing Organizations|\n|FUNDER|Funders with Award DOIs|\n|INST|Institution for Publication or Presentation|\n|ORIG_RES|Originating Research Organizations|\n|SPONSOR|Sponsoring Organizations|\n",
-        "enum" : [ "AUTHOR", "CONTRIB", "COLLAB", "FUNDER", "INST", "ORIG_RES", "SPONSOR" ]
+        "description" : "Indicates type of organization:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|COLLAB|Collaborator Organizations|\n|CONTRIB|Contributing Organizations|\n|INST|Institution for Publication or Presentation|\n|ORIG_RES|Originating Research Organizations|\n|SPONSOR|Sponsoring Organizations|\n",
+        "enum" : [ "AUTHOR", "CONTRIB", "COLLAB", "INST", "ORIG_RES", "SPONSOR" ]
       },
       "Person" : {
         "type" : "object",
