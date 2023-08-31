@@ -2126,7 +2126,7 @@
             "description" : "Any customized infix value for the DOI used when generating a DOI reference",
             "example" : "Climate2019"
           },
-          "edit_by_user_id" : {
+          "edited_by" : {
             "type" : "integer",
             "description" : "OSTI user ID responsible for this edit of the metadata.",
             "example" : 112389
@@ -2206,6 +2206,11 @@
               "type" : "string"
             }
           },
+          "monographic_title" : {
+            "type" : "string",
+            "description" : "For book chapters, the title of the book.",
+            "example" : "On The Origin of Species"
+          },
           "opn_addressee" : {
             "type" : "string",
             "description" : "For OpenNET records, the addressee information"
@@ -2247,23 +2252,28 @@
           },
           "pams_publication_status" : {
             "type" : "integer",
-            "description" : "(PAMS only) PAMS system specific publication status information.\n| value | description |\n| -- | -- |\n| 1 | Published |\n| 2 | Awaiting Publication |\n| 3 | Accepted |\n| 4 | Under Review |\n| 5 | Submitted |\n| 0 | Other |\n"
+            "description" : "(PAMS only) PAMS system specific publication status information.\n\nFor PAMS Journals:\n| value | description |\n| -- | -- |\n| 1 | Published |\n| 2 | Awaiting Publication |\n| 3 | Accepted |\n| 4 | Under Review |\n| 5 | Submitted |\n| 0 | Other |\n\nFor PAMS Patent Applications:\n| value | description |\n| -- | -- |\n| 1 | Submitted |\n| 2 | Pending |\n| 3 | Granted, requiring publication or issue date |\n",
+            "example" : 3
           },
           "pams_publication_status_other" : {
             "type" : "string",
-            "description" : "(PAMS only) PAMS system other publication status information. Required if pams_publication_status is 0-Other."
+            "description" : "(PAMS only) PAMS system other publication status information. Required if pams_publication_status is 0-Other.",
+            "example" : "Pending final peer review and publication."
           },
           "pams_authors" : {
             "type" : "string",
-            "description" : "(PAMS only) All authors on a PAMS record if applicable."
+            "description" : "(PAMS only) All authors on a PAMS record if applicable.",
+            "example" : "Person, Example A.; One, Another"
           },
           "pams_product_sub_type" : {
             "type" : "integer",
-            "description" : "(PAMS only) Specific sub type of record for PAMS system.\n| value | description |\n| -- | -- |\n| 1 | Journal Article (detail in publication status) |\n| 2 | Book |\n| 3 | Book Chapter |\n| 4 | Thesis/Dissertation |\n| 5 | Conference Paper/Presentation |\n| 6 | Website |\n| 7 | Other Publication |\n| 8 | Patent |\n| 9 | Invention |\n| 10 | License |\n| 11 | Audio or Video |\n| 12 | Databases |\n| 13 | Data and Research Material |\n| 14 | Education Aids or Curricula |\n| 15 | Evaluation Instruments |\n| 16 | Instruments or Equipment |\n| 17 | Models |\n| 18 | Physical Collections |\n| 19 | Protocols |\n| 20 | Software or NetWare |\n| 21 | Survey Instruments |\n| 22 | Other Award Product |\n| 23 | Technology or Technique |\n"
+            "description" : "(PAMS only) Specific sub type of record for PAMS system.\n| value | description |\n| -- | -- |\n| 1 | Journal Article (detail in publication status) |\n| 2 | Book |\n| 3 | Book Chapter |\n| 4 | Thesis/Dissertation |\n| 5 | Conference Paper/Presentation |\n| 6 | Website |\n| 7 | Other Publication |\n| 8 | Patent |\n| 9 | Invention |\n| 10 | License |\n| 11 | Audio or Video |\n| 12 | Databases |\n| 13 | Data and Research Material |\n| 14 | Education Aids or Curricula |\n| 15 | Evaluation Instruments |\n| 16 | Instruments or Equipment |\n| 17 | Models |\n| 18 | Physical Collections |\n| 19 | Protocols |\n| 20 | Software or NetWare |\n| 21 | Survey Instruments |\n| 22 | Other Award Product |\n| 23 | Technology or Technique |\n",
+            "example" : 8
           },
           "pams_patent_country_code" : {
             "type" : "string",
-            "description" : "(PAMS only) Patent country code for PAMS records."
+            "description" : "(PAMS only) Patent country code for PAMS records.",
+            "example" : "US"
           },
           "pams_transnational_patent_office" : {
             "type" : "string",
@@ -2321,7 +2331,7 @@
           },
           "prot_flag" : {
             "type" : "string",
-            "description" : "Indicates the type of protected data described by this record (PROT in\nACCESS_LIMITATIONS).\n\n| code | description |\n| -- | -- |\n| CRADA | CRADA record |\n| EPACT | EPACT record, protected until PROT_RELEASE_DATE |\n| OTHER | Other protected record, described in PROT_DATA_OTHER |\n"
+            "description" : "Indicates the type of protected data described by this record.  PROT must be specified in the access limitations.\n\n| code | description |\n| -- | -- |\n| CRADA | CRADA record |\n| EPACT | EPACT record, protected until PROT_RELEASE_DATE |\n| OTHER | Other protected record, described in PROT_DATA_OTHER |\n"
           },
           "prot_data_other" : {
             "type" : "string",
@@ -2334,7 +2344,7 @@
           },
           "publication_date" : {
             "type" : "string",
-            "description" : "Date of publication of this record",
+            "description" : "Date of publication of this record.  For Thesis/Dissertation records, this may also be the completion date of the Thesis.  For Patents, the date the patent was issued or approved.",
             "example" : "06/12/2009"
           },
           "publication_date_text" : {
@@ -2428,7 +2438,7 @@
           },
           "title" : {
             "type" : "string",
-            "description" : "Title of record",
+            "description" : "Title of record.  For Book Chapters, the title of the chapter.",
             "example" : "Sample document title"
           },
           "identifiers" : {
@@ -2712,7 +2722,7 @@
             "description" : "Mime type describing the MEDIA FILE content.",
             "example" : "application/pdf"
           },
-          "added_by_user_id" : {
+          "added_by" : {
             "type" : "integer",
             "description" : "Indicates the ELINK USER ID that attached this MEDIA FILE.",
             "example" : 999
