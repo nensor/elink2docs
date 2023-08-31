@@ -2038,14 +2038,14 @@
             "description" : "Describes record's availibility information",
             "example" : "Also available at https://sample.com/document/report.pdf"
           },
-          "book_edition" : {
+          "edition" : {
             "type" : "string",
-            "description" : "For Book submissions, the edition number or name",
+            "description" : "Edition number, as applicable to Books or other products.",
             "example" : "2023"
           },
-          "book_volume" : {
+          "volume" : {
             "type" : "string",
-            "description" : "For Book submissions, the volume number of the work",
+            "description" : "A volume number as applicable, usually for journals or books.",
             "example" : "1"
           },
           "collection_type" : {
@@ -2118,7 +2118,7 @@
           },
           "doi" : {
             "type" : "string",
-            "description" : "The DOI for this record, if any",
+            "description" : "The DOI for this record, if any.  Enter value if previously assigned a DOI for the record from an outside service.  If not supplied, OSTI may assign a DOI for the work for certain applicable record types.",
             "example" : "10.5072/2020/238479ax"
           },
           "doi_infix" : {
@@ -2160,14 +2160,14 @@
             "type" : "boolean",
             "example" : false
           },
-          "journal_fulltext_embargo_sunset_date" : {
+          "media_embargo_sunset_date" : {
             "type" : "string",
-            "description" : "Indicates date on which the fulltext embargo is to end",
+            "description" : "Indicates date on which the document embargo ends, if applicable.",
             "example" : "7/6/2022"
           },
-          "journal_issue" : {
+          "issue" : {
             "type" : "string",
-            "description" : "Journal issue number for this record if any",
+            "description" : "Issue number for journals or other applicable products if any.",
             "example" : "44"
           },
           "journal_license_url" : {
@@ -2189,11 +2189,6 @@
             "type" : "string",
             "description" : "Specific sub-type of the journal article.  For product type \"JA\" only.\n\nFurther qualifies the type of record.\n\n| code | description |\n| -- | -- |\n| FT | Manuscript |\n| AM | DOE Accepted Manuscript |\n| AW | DOE Accepted Manuscript without DOI |\n| PA | Published Article (CHORUS) |\n| PM | Published Accepted Manuscript (CHORUS) |\n",
             "example" : "AM"
-          },
-          "journal_volume" : {
-            "type" : "string",
-            "description" : "Journal volume reference for this publication",
-            "example" : "215"
           },
           "keywords" : {
             "type" : "array",
@@ -2316,13 +2311,13 @@
           },
           "product_type" : {
             "type" : "string",
-            "description" : "Indicates primary type of record:\n| code | description |\n| -- | -- |\n| AR | Accomplishment Report |\n| B | Book |\n| CO | Conference Information |\n| FS | Factsheet |\n| JA | Journal Article |\n| P | Patent |\n| PD | Program Document |\n| TD | Thesis/Dissertation |\n| TR | Technical or Workshop Report |\n",
+            "description" : "Indicates primary type of record:\n| code | description |\n| -- | -- |\n| AR | Accomplishment Report |\n| B | Book |\n| CO | Conference Information |\n| FS | Factsheet |\n| JA | Journal Article |\n| P | Patent |\n| PD | Program Document |\n| TD | Thesis/Dissertation |\n| TR | Technical or Workshop Report |\n| OT | Other |\n",
             "example" : "TR",
-            "enum" : [ "TR", "JA", "FS", "TD", "P", "PD", "AR", "CO", "B" ]
+            "enum" : [ "TR", "JA", "FS", "TD", "P", "PD", "AR", "CO", "B", "OT" ]
           },
           "product_type_other" : {
             "type" : "string",
-            "description" : "Additional information for \"OTHER\" product types"
+            "description" : "Additional information for \"OTHER\" product types.  Required if \"OT\" product type is specified for this record."
           },
           "prot_flag" : {
             "type" : "string",
@@ -2463,30 +2458,6 @@
             "items" : {
               "$ref" : "#/components/schemas/RelatedIdentifier"
             }
-          },
-          "added_version" : {
-            "type" : "integer",
-            "description" : "Version number of initial version of this record"
-          },
-          "updated_version" : {
-            "type" : "integer",
-            "description" : "Version number of the latest version of this record"
-          },
-          "first_submitted_to_osti_version" : {
-            "type" : "integer",
-            "description" : "First version number of record submitted to OSTI (if any)"
-          },
-          "last_submitted_to_osti_version" : {
-            "type" : "integer",
-            "description" : "Last version number of record submitted to OSTI (if any)"
-          },
-          "first_released_version" : {
-            "type" : "integer",
-            "description" : "First version number of record successfully releasing (if any)"
-          },
-          "last_released_version" : {
-            "type" : "integer",
-            "description" : "Latest version number of record successfully releasing (if any)"
           },
           "doi_status" : {
             "type" : "string",
