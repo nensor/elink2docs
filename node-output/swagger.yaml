@@ -581,9 +581,7 @@
                 } ],
                 "organizations" : [ {
                   "type" : "ORIG_RES",
-                  "name" : "Oak Ridge National Laboratory",
-                  "ror" : "01qz5mb56",
-                  "country" : "US"
+                  "name" : "Oak Ridge National Laboratory"
                 } ]
               }
             }
@@ -625,9 +623,7 @@
                   } ],
                   "organizations" : [ {
                     "type" : "ORIG_RES",
-                    "name" : "Oak Ridge National Laboratory",
-                    "ror" : "01qz5mb56",
-                    "country" : "US"
+                    "name" : "Oak Ridge National Laboratory"
                   } ]
                 }
               }
@@ -2242,13 +2238,17 @@
           },
           "other_information" : {
             "type" : "array",
+            "description" : "Information useful to include in published announcements which is not suited for other fields.",
+            "example" : [ "Published in Nature, Fall 2012" ],
             "items" : {
               "type" : "string"
             }
           },
           "ouo_release_date" : {
             "type" : "string",
-            "description" : "Date of OUO access limitation expiration if applicable."
+            "description" : "Date of OUO access limitation expiration if applicable.",
+            "format" : "datetime",
+            "example" : "1997-05-09 10:23:44"
           },
           "pams_publication_status" : {
             "type" : "integer",
@@ -2327,11 +2327,13 @@
           },
           "product_type_other" : {
             "type" : "string",
-            "description" : "Additional information for \"OTHER\" product types.  Required if \"OT\" product type is specified for this record."
+            "description" : "Additional information for \"OTHER\" product types.  Required if \"OT\" product type is specified for this record.",
+            "example" : "Preprint"
           },
           "prot_flag" : {
             "type" : "string",
-            "description" : "Indicates the type of protected data described by this record.  PROT must be specified in the access limitations.\n\n| code | description |\n| -- | -- |\n| CRADA | CRADA record |\n| EPACT | EPACT record, protected until PROT_RELEASE_DATE |\n| OTHER | Other protected record, described in PROT_DATA_OTHER |\n"
+            "description" : "Indicates the type of protected data described by this record.  PROT must be specified in the access limitations.\n\n| code | description |\n| -- | -- |\n| CRADA | CRADA record |\n| EPACT | EPACT record, protected until PROT_RELEASE_DATE |\n| OTHER | Other protected record, described in PROT_DATA_OTHER |\n",
+            "example" : "EPACT"
           },
           "prot_data_other" : {
             "type" : "string",
@@ -2381,6 +2383,7 @@
           "report_types" : {
             "type" : "array",
             "description" : "The type(s) of information or frequency of reporting of information in this report.\n| code | description |\n| -- | -- |\n| A | Annual |\n| B | Book |\n| F | Final |\n| I | Indeterminate |\n| M | Monthly |\n| O | Other |\n| Q | Quarterly |\n| S | Semi-annual |\n| T | Topical |\n| X | Other publications |\n",
+            "example" : [ "F", "B" ],
             "items" : {
               "type" : "string"
             }
@@ -2428,13 +2431,10 @@
           "subject_category_code_legacy" : {
             "type" : "array",
             "description" : "Any legacy or historical subject category codes for this report",
+            "example" : [ "Political Science", "Geosciences", "Physics" ],
             "items" : {
               "type" : "string"
             }
-          },
-          "transmission_mode" : {
-            "type" : "string",
-            "example" : "FTP"
           },
           "title" : {
             "type" : "string",
@@ -2471,20 +2471,24 @@
           },
           "doi_status" : {
             "type" : "string",
-            "description" : "Registration response status for record, if applicable, of latest \nreleased version of the record.\n| value | description |\n| --- | --- |\n| OK | This submission completed with registrar successfully |\n| FAIL | Latest submission did not complete |\n"
+            "description" : "Registration response status for record, if applicable, of latest \nreleased version of the record.\n| value | description |\n| --- | --- |\n| OK | This submission completed with registrar successfully |\n| PENDING | DOI has not yet been submitted to authority |\n| SENT | DOI information has been transmitted but not confirmed |\n| FAIL | Latest submission did not complete |\n",
+            "example" : "OK"
           },
           "registration_authority" : {
             "type" : "string",
-            "description" : "DOI registrar authority, if any, for this record's DOI value.\n| value | description |\n| --- | --- |\n| CROSSREF | Crossref DOI registration |\n| DATACITE | Datacite DOI registration |\n"
+            "description" : "DOI registrar authority, if any, for this record's DOI value.\n| value | description |\n| --- | --- |\n| CROSSREF | Crossref DOI registration |\n| DATACITE | Datacite DOI registration |\n",
+            "example" : "DATACITE"
           },
           "doi_source" : {
             "type" : "string",
-            "description" : "Origination of DOI on this record, if applicable.\n| value | description |\n| --- | --- |\n| OSTI | DOI value issued by and maintained by OSTI |\n| METADATA | DOI value supplied by submitter |\n| QUERY | DOI value was found to be assigned elsewhere for this record |\n"
+            "description" : "Origination of DOI on this record, if applicable.\n| value | description |\n| --- | --- |\n| OSTI | DOI value issued by and maintained by OSTI |\n| METADATA | DOI value supplied by submitter |\n| QUERY | DOI value was found to be assigned elsewhere for this record |\n",
+            "example" : "OSTI"
           },
           "url" : {
             "type" : "string",
             "description" : "Optionally, a link to product, landing page, or technical report described by this record.  If the product or report is to be hosted by OSTI, the media itself should be uploaded through the API media interfaces once the metadata information has been entered and the OSTI ID obtained.",
-            "format" : "uri"
+            "format" : "uri",
+            "example" : "https://sample.org/reports/2023/final_report.pdf"
           }
         },
         "description" : "Defines the bibliographic metadata about a particular work or record.  Depending on product type, various elements are permitted, not permitted, or required."
@@ -2519,8 +2523,8 @@
       },
       "OrganizationType" : {
         "type" : "string",
-        "description" : "Indicates type of organization:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|COLLAB|Collaborator Organizations|\n|CONTRIB|Contributing Organizations|\n|INST|Institution for Publication or Presentation|\n|ORIG_RES|Originating Research Organizations|\n|SPONSOR|Sponsoring Organizations|\n",
-        "enum" : [ "AUTHOR", "CONTRIB", "COLLAB", "INST", "ORIG_RES", "SPONSOR" ]
+        "description" : "Indicates type of organization:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|CONTRIB|Contributing Organizations|\n|INST|Institution for Publication or Presentation|\n|ORIG_RES|Originating Research Organizations|\n|SPONSOR|Sponsoring Organizations|\n",
+        "enum" : [ "AUTHOR", "CONTRIB", "INST", "ORIG_RES", "SPONSOR" ]
       },
       "Person" : {
         "type" : "object",
@@ -2595,8 +2599,8 @@
       },
       "PersonType" : {
         "type" : "string",
-        "description" : "Indicates type of person:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|CONTACT|Contact Information|\n|CONTRIB|Contributor|\n|RELEASE|Releasing Official|\n|SBIZ_BO|SBIR/STTR Business Official|\n|SBIZ_PI|SBIR/STTR Principal Investigator|\n",
-        "enum" : [ "AUTHOR", "RELEASE", "CONTACT", "CONTRIB", "SBIZ_PI", "SBIZ_BO" ]
+        "description" : "Indicates type of person:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|CONTACT|Contact Information|\n|CONTRIB|Contributor|\n|PROT_CE|Protected Data Courtesy Email Information|\n|PROT_RO|Actual Releasing Official Name|\n|RELEASE|Releasing Official|\n|SBIZ_BO|SBIR/STTR Business Official|\n|SBIZ_PI|SBIR/STTR Principal Investigator|\n",
+        "enum" : [ "AUTHOR", "RELEASE", "CONTACT", "CONTRIB", "PROT_CE", "PROT_RO", "SBIZ_PI", "SBIZ_BO" ]
       },
       "ContributorType" : {
         "type" : "string",
@@ -2636,7 +2640,8 @@
           },
           "value" : {
             "type" : "string",
-            "description" : "Value of this identifier"
+            "description" : "Value of this identifier",
+            "example" : "9234782"
           },
           "uri" : {
             "type" : "string",
