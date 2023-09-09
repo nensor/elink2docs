@@ -2,7 +2,7 @@
   "openapi" : "3.0.0",
   "info" : {
     "title" : "ELINK2 API",
-    "description" : "ELINK version 2 record and media API.",
+    "description" : "ELINK version 2 API is used for querying existing OSTI products, as well as submission and revision of both metadata and media associated with reports and other DOE related research products.\n\nThe API architecture is REST-based, using various HTTP operations to interact with metadata and media products.  This document describes the various interactive endpoints with examples of\nusage of each, both for current and historical revisions of metadata as detailed below.\n",
     "contact" : {
       "name" : "Neal Ensor",
       "email" : "ensorn@osti.gov"
@@ -18,13 +18,13 @@
   } ],
   "tags" : [ {
     "name" : "records",
-    "description" : "Interact with record metadata in JSON."
+    "description" : "Interact with current revisions of OSTI products through querying, submitting, or updating metadata and / or media records for maintaining OSTI products."
   }, {
     "name" : "history",
-    "description" : "Interact with previous revisions of record metadata."
+    "description" : "Query historical revisions of OSTI metadata products."
   }, {
     "name" : "record media",
-    "description" : "Interact with media sets by associated record OSTI ID."
+    "description" : "Interact with media files associated with OSTI metadata products."
   }, {
     "name" : "media file",
     "description" : "Interact directly with individual media files based on unique ID."
@@ -33,12 +33,12 @@
     "/records" : {
       "get" : {
         "tags" : [ "records" ],
-        "summary" : "Search OSTI documents based on passed in criteria values and filters.",
-        "description" : "Search for records at OSTI based on indicated parameters.",
+        "summary" : "Search OSTI metadata repository based on request parameters.",
+        "description" : "Allows users to search through available OSTI metadata products based on a variety of query filters described below.  Search fields may be combined to further refine results and narrow the focus of desired records.  \n\nResults found will be returned as arrays of one or more matching metadata records as applicable.  Additionally, the response will contain useful headers detailed below.\n\n| header field | description |\n| --- | --- |\n| x-total-count | Contains total number of records matching the criteria indicated |\n| link | HTTP links to first, last, next, and previous sets of results if applicable |\n",
         "parameters" : [ {
           "name" : "all",
           "in" : "query",
-          "description" : "Search within any available search field for the requested string",
+          "description" : "Search all fields for indicated terms",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -48,7 +48,7 @@
         }, {
           "name" : "title",
           "in" : "query",
-          "description" : "Search within the title of a record",
+          "description" : "Search within title field",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -98,7 +98,7 @@
         }, {
           "name" : "doi",
           "in" : "query",
-          "description" : "Search DOI values",
+          "description" : "Search within DOI (prefix or full value)",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -2149,9 +2149,6 @@
             "description" : "Indicates if this record is currently hidden",
             "example" : false
           },
-          "input_code" : {
-            "type" : "string"
-          },
           "invention_disclosure_flag" : {
             "type" : "boolean",
             "example" : false
@@ -2654,7 +2651,8 @@
             "description" : "Optional title or description for this identifier or award",
             "example" : "Miller Research Grant"
           }
-        }
+        },
+        "description" : "Values of various identifying numbers, such as DOE contract number, product numbers, ISBN, ISSN, and other various forms of identifying markings or numbers pertaining to the product or metadata."
       },
       "IdentifierType" : {
         "type" : "string",
@@ -2772,7 +2770,8 @@
             "description" : "Indicates the last date and time this media file was modified.",
             "example" : "2013-04-22T18:33:28.234+0000"
           }
-        }
+        },
+        "description" : "Metadata information pertaining to a particular media resource associated with this product.  Contains information about its disposition, content, and processing state."
       },
       "MediaSet" : {
         "type" : "object",
@@ -2782,9 +2781,9 @@
             "description" : "Unique ID for this MEDIA SET.",
             "example" : 233743
           },
-          "version" : {
+          "revision" : {
             "type" : "integer",
-            "description" : "Version number of this media association set.",
+            "description" : "Revision number of this media association set.",
             "example" : 3
           },
           "osti_id" : {
@@ -2792,19 +2791,19 @@
             "description" : "Links to Record OSTI_ID value for a Media Set.",
             "example" : 99238
           },
-          "status" : {
+          "processing_status" : {
             "type" : "string",
             "description" : "Indicates current processing state or level of this set.",
-            "example" : "PROCESSING"
+            "example" : "DONE"
           },
-          "added_by_user_id" : {
+          "added_by" : {
             "type" : "integer",
-            "description" : "Indicates user ID that first added or created this media set.",
-            "example" : -33
+            "description" : "Indicates user ID that added this media set.",
+            "example" : 34582
           },
           "media_location" : {
             "type" : "string",
-            "description" : "Indicates if this media set's main content is LOCAL or OFF-SITE.",
+            "description" : "Indicates if this media set's main content is LOCAL or OFF-SITE.\n\n| value | description |\n| --- | --- |\n| L | File is stored locally at OSTI |\n| O | URL is an external off site location |\n",
             "example" : "L",
             "enum" : [ "L", "O" ]
           },
@@ -2817,31 +2816,25 @@
             "type" : "string",
             "description" : "Date this media set was first created. (UTC)",
             "format" : "datetime",
-            "example" : "1992-03-08 11:23:44"
+            "example" : "1992-03-08T11:23:44.123+00:00"
           },
           "date_updated" : {
             "type" : "string",
             "description" : "Date this media set was last modified. (UTC)",
             "format" : "datetime",
-            "example" : "2009-11-05 08:33:12"
+            "example" : "2009-11-05T08:33:12.231+00:00"
           },
           "date_valid_start" : {
             "type" : "string",
             "description" : "Starting date of media association. (UTC)",
             "format" : "datetime",
-            "example" : "2021-02-13 16:32:23"
+            "example" : "2021-02-13T16:32:23.234+00:00"
           },
           "date_valid_end" : {
             "type" : "string",
             "description" : "If present, date and time when media association was removed or replaced. (UTC)",
             "format" : "datetime",
-            "example" : "2021-02-15 12:32:11"
-          },
-          "media_status" : {
-            "type" : "string",
-            "description" : "Current status of this media association, indicates if media was newly added, updated, or removed.\n| code | description |\n| -- | -- |\n| A | Added, first media association for this record |\n| U | Updated, media set has been modified or replaced |\n| R | Removed, media association was deleted |\n",
-            "example" : "A",
-            "enum" : [ "A", "U", "R" ]
+            "example" : "2021-02-15T12:32:11.332+00:00"
           },
           "files" : {
             "type" : "array",
@@ -2849,7 +2842,8 @@
               "$ref" : "#/components/schemas/MediaFile"
             }
           }
-        }
+        },
+        "description" : "Metadata about files associated with this product.  Summarizes the main media file associated with this product, usually an off-site URL or PDF uploaded to OSTI, with its state, URL if applicable, and other identifying state information pertaining to the media files as a group."
       },
       "ErrorSet" : {
         "type" : "object",
@@ -2860,7 +2854,8 @@
               "$ref" : "#/components/schemas/Error"
             }
           }
-        }
+        },
+        "description" : "Information about any processing or ingest errors from submissions."
       },
       "Error" : {
         "type" : "object",
@@ -2878,7 +2873,8 @@
           "source" : {
             "$ref" : "#/components/schemas/Error_source"
           }
-        }
+        },
+        "description" : "Describes an individual error condition present on an API submission, containing details of the HTTP response code, an error message description, and if applicable a pointer indicating JSON field in error."
       },
       "Revision" : {
         "type" : "object",
