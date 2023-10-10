@@ -14,7 +14,11 @@
     "version" : "2.4.0"
   },
   "servers" : [ {
-    "url" : "/"
+    "url" : "https://review.osti.gov/elink2api",
+    "description" : "ELINK 2.0 Beta Service"
+  } ],
+  "security" : [ {
+    "bearerAuth" : [ ]
   } ],
   "tags" : [ {
     "name" : "records",
@@ -557,16 +561,18 @@
               },
               "example" : {
                 "title" : "Electron microscope data for photons",
+                "description" : "Simple technical report on electron microscope collection from observations of photonic particles.",
                 "site_ownership_code" : "LLNL",
                 "product_type" : "TR",
                 "access_limitations" : [ "UNL" ],
                 "publication_date" : "02/18/2019",
+                "released_to_osti_date" : "10/01/2023",
                 "identifiers" : [ {
                   "type" : "RN",
                   "value" : "RN/2019-238942"
                 }, {
                   "type" : "CN_DOE",
-                  "value" : "AG03-GX-2019238943"
+                  "value" : "AB22-90PC64053"
                 } ],
                 "persons" : [ {
                   "first_name" : "Arthur",
@@ -578,10 +584,18 @@
                   "last_name" : "Public",
                   "type" : "CONTRIB",
                   "contributor_type" : "Editor"
+                }, {
+                  "first_name" : "A.",
+                  "last_name" : "Manager",
+                  "type" : "RELEASE",
+                  "affiliations" : [ "Big Research Facilities, LLC" ]
                 } ],
                 "organizations" : [ {
                   "type" : "ORIG_RES",
                   "name" : "Oak Ridge National Laboratory"
+                }, {
+                  "type" : "SPONSOR",
+                  "name" : "US Department of Energy"
                 } ]
               }
             }
@@ -596,13 +610,19 @@
                   "$ref" : "#/components/schemas/Record"
                 },
                 "example" : {
-                  "osti_id" : 78923,
+                  "osti_id" : 2000005,
+                  "revision" : 1,
                   "title" : "Electron microscope data for photons",
-                  "workflow_status" : "SA",
+                  "description" : "Simple technical report on electron microscope collection from observations of photonic particles.",
+                  "workflow_status" : "SO",
                   "site_ownership_code" : "LLNL",
                   "product_type" : "TR",
                   "access_limitation" : [ "UNL" ],
-                  "publication_date" : "02/18/2019",
+                  "publication_date" : "2019-02-18",
+                  "released_to_osti_date" : "2023-10-01",
+                  "date_added" : "2023-10-10T18:56:18.234+00:00",
+                  "date_submitted_to_osti_first" : "2023-10-10T18:56:18.234+00:00",
+                  "date_submitted_to_osti_last" : "2023-10-10T18:56:18.234+00:00",
                   "identifiers" : [ {
                     "type" : "RN",
                     "value" : "RN/2019-238942"
@@ -620,10 +640,18 @@
                     "last_name" : "Public",
                     "person_type" : "CONTRIB",
                     "contributor_type" : "Editor"
+                  }, {
+                    "first_name" : "A.",
+                    "last_name" : "Manager",
+                    "type" : "RELEASE",
+                    "affiliations" : [ "Big Research Facilities, LLC" ]
                   } ],
                   "organizations" : [ {
                     "type" : "ORIG_RES",
                     "name" : "Oak Ridge National Laboratory"
+                  }, {
+                    "type" : "SPONSOR",
+                    "name" : "US Department of Energy"
                   } ]
                 }
               }
@@ -726,7 +754,7 @@
       "put" : {
         "tags" : [ "records" ],
         "summary" : "Update existing record information.",
-        "description" : "Update existing records at OSTI by unique OSTI ID.",
+        "description" : "Update existing records at OSTI by unique OSTI ID.  Users may specify only those elements they intend to change to perform updates if desired.  Successful updates will result in a new revision of the existing metadata",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -1803,7 +1831,8 @@
           "explode" : false,
           "schema" : {
             "type" : "string",
-            "format" : "date-time"
+            "format" : "date-time",
+            "example" : "2022-02-01T17:23:00.423Z"
           }
         } ],
         "responses" : {
@@ -1999,22 +2028,22 @@
           },
           "workflow_status" : {
             "type" : "string",
-            "description" : "Desired status for this record at time of initial submission to OSTI.\n| code | description |\n| -- | -- |\n| SR | Submit to Releasing Official, additional required validations, must be approved to release |\n| SO | Submit to OSTI, releasing official approval level. At this level, record processing and release begins |\n| R | Released, record has been successfully processed |\n",
+            "description" : "Desired status for this record at time of initial submission to OSTI.\n| code | description |\n| -- | -- |\n| SR | Submit to Releasing Official, additional required validations, must be approved to release |\n| SO | Submit to OSTI, releasing official approval level. At this level, record processing and release begins |\n| SF | Submitted but failed validation |\n| SX | Submitted but failed to release |\n| SV | Submitted and validated; pending release |\n| R | Released, record has been successfully processed |\n",
             "example" : "SO",
-            "enum" : [ "R", "SR", "SO" ]
+            "enum" : [ "R", "SR", "SO", "SF", "SX", "SV" ]
           },
           "access_limitations" : {
             "type" : "array",
-            "description" : "Access limitation codes to describe the distribution rules and limitations for this work.\n\n| code | description |\n| -- | -- |\n| UNL | Unlimited announcement |\n| OPN | OpenNET (requires OpenNET attributes) |\n| CPY | Copyright restricted material |\n| CUI | Controlled Unclassified Information |\n| OUO | Official use only |\n| ECI | Export-controlled information |\n| SSI | Security sensitive information |\n| PROT | Protected data (e.g., CRADA, additional information required) |\n| PAT | Patented information |\n| LRD | Limited Rights Data |\n| PDOUO | Program-determined OUO |\n| NNPI | Naval Navigation Propulsion Info |\n| INTL | International data |\n\nMost access limitations beyond UNL will require additional information for\ndefinitions in other required fields. Note that only certain combinations\nof access limitations are valid.\n",
+            "description" : "Access limitation codes to describe the distribution rules and limitations for this work.\n\n| code | description |\n| -- | -- |\n| UNL | Unlimited announcement |\n| OPN | OpenNET (requires OpenNET attributes) |\n| CPY | Copyright restricted material |\n| CUI | Controlled Unclassified Information |\n| OUO | Official use only |\n| ECI | Export-controlled information |\n| SSI | Security sensitive information |\n| PROT | Protected data (e.g., CRADA, additional information required) |\n| PAT | Patented information |\n| LRD | Limited Rights Data |\n| PDOUO | Program-determined OUO |\n| NNPI | Naval Navigation Propulsion Info |\n| INTL | International data |\n| CUI | Controlled Unlimited Information |\n\nMost access limitations beyond UNL will require additional information for\ndefinitions in other required fields. Note that only certain combinations\nof access limitations are valid.\n\nCUI access limitation must be specified alone, and additional CUI markings designated in the access_limitation_other field.\n",
             "example" : [ "UNL", "OPN" ],
             "items" : {
               "type" : "string",
-              "enum" : [ "UNL", "OPN", "CPY", "OUO", "PROT", "PDOUO", "ECI", "PDSH", "USO", "LRD", "UCNI", "NAT", "NNPI", "INTL", "PROP", "PAT", "OTHR" ]
+              "enum" : [ "UNL", "OPN", "CPY", "OUO", "PROT", "PDOUO", "ECI", "PDSH", "USO", "LRD", "UCNI", "NAT", "NNPI", "INTL", "PROP", "PAT", "OTHR", "CUI" ]
             }
           },
           "access_limitation_other" : {
             "type" : "string",
-            "description" : "Additional information about access limitation for this record, if needed."
+            "description" : "Additional information about access limitation for this record, if needed. Required for CUI or PDOUO designations in access limitation."
           },
           "user_id" : {
             "type" : "integer",
@@ -2046,8 +2075,9 @@
           },
           "collection_type" : {
             "type" : "string",
-            "description" : "Indicates the OSTI collection type of this record.",
-            "example" : "LAB_API"
+            "description" : "Indicates the OSTI collection type originally creating this record.  Will be set by the system upon initial record creation; not supplied or required by the user.\n\n| code | description |\n| --- | --- |\n| DOE_LAB | DOE Laboratory submission |\n| DOE_GRANT | DOE Grantee or Financial Award Recipient submission |\n| CHORUS | Specialized CHORUS journal publisher feed ingest |\n",
+            "example" : "LAB_API",
+            "enum" : [ "DOE_LAB", "DOE_GRANT", "CHORUS" ]
           },
           "conference_information" : {
             "type" : "string",
@@ -2056,7 +2086,7 @@
           },
           "conference_type" : {
             "type" : "string",
-            "description" : "Code representing the type of conference-related work of this record. Only applicable to CO type submissions.\n\n| code | description |\n| -- | -- |\n| C | Paper/Proceeding (Legacy Code) |\n| P | Proceedings |\n| A | Paper |\n| R | Presentation |\n| O | Poster |\n",
+            "description" : "Code representing the type of conference-related work of this record. Generally only applicable to CO type submissions.\n\n| code | description |\n| -- | -- |\n| C | Paper/Proceeding (Legacy Code) |\n| P | Proceedings |\n| A | Paper |\n| R | Presentation |\n| O | Poster |\n",
             "example" : "O"
           },
           "contract_award_date" : {
@@ -2072,22 +2102,26 @@
           "date_added" : {
             "type" : "string",
             "description" : "Date record first entered the OSTI system. Value internally maintaned by ELINK.",
-            "format" : "date-time"
+            "format" : "date-time",
+            "example" : "2023-09-22T18:31:32.043Z"
           },
           "date_updated" : {
             "type" : "string",
             "description" : "Date of this revision of the record. Value internally maintained by ELINK.",
-            "format" : "date-time"
+            "format" : "date-time",
+            "example" : "2020-04-02T12:33:17.553Z"
           },
           "date_submitted_first" : {
             "type" : "string",
             "description" : "Date record was first submitted to OSTI for publication. Maintained internally by ELINK.",
-            "format" : "date-time"
+            "format" : "date-time",
+            "example" : "2019-04-04T08:25:12.234Z"
           },
           "date_submitted_last" : {
             "type" : "string",
             "description" : "Most recent date record information was submitted to OSTI.  Maintained internally by ELINK.",
-            "format" : "date-time"
+            "format" : "date-time",
+            "example" : "2018-05-04T11:44:23.864Z"
           },
           "description" : {
             "type" : "string",
@@ -2344,7 +2378,8 @@
           "publication_date" : {
             "type" : "string",
             "description" : "Date of publication of this record.  For Thesis/Dissertation records, this may also be the completion date of the Thesis.  For Patents, the date the patent was issued or approved.",
-            "example" : "06/12/2009"
+            "format" : "date",
+            "example" : "2009-06-12"
           },
           "publication_date_text" : {
             "type" : "string",
@@ -2362,7 +2397,8 @@
           "released_to_osti_date" : {
             "type" : "string",
             "description" : "Date record information was released to OSTI, as entered by releasing official.",
-            "example" : "06/03/2019"
+            "format" : "date",
+            "example" : "2019-06-03"
           },
           "releasing_official_comments" : {
             "type" : "string",
@@ -2763,12 +2799,13 @@
           "date_file_added" : {
             "type" : "string",
             "description" : "Indicates the date and time this media file was created.",
-            "example" : "2012-08-33T15:33:22.504+0000"
+            "format" : "date-time"
           },
           "date_file_updated" : {
             "type" : "string",
             "description" : "Indicates the last date and time this media file was modified.",
-            "example" : "2013-04-22T18:33:28.234+0000"
+            "format" : "date-time",
+            "example" : "2013-04-22T18:33:28.234Z"
           }
         },
         "description" : "Metadata information pertaining to a particular media resource associated with this product.  Contains information about its disposition, content, and processing state."
@@ -2968,6 +3005,12 @@
             "example" : "/identifiers"
           }
         }
+      }
+    },
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer"
       }
     }
   }
