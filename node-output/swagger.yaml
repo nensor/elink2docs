@@ -1136,6 +1136,17 @@
             "type" : "integer",
             "example" : 77564
           }
+        }, {
+          "name" : "reason",
+          "in" : "query",
+          "description" : "Reason for deletion of media for reporting purposes.",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "Wrong PDF was attached to this report."
+          }
         } ],
         "responses" : {
           "204" : {
@@ -2351,10 +2362,7 @@
             "example" : "227 pages"
           },
           "product_type" : {
-            "type" : "string",
-            "description" : "Indicates primary type of record:\n| code | description |\n| -- | -- |\n| AR | Accomplishment Report |\n| B | Book |\n| CO | Conference Information |\n| FS | Factsheet |\n| JA | Journal Article |\n| P | Patent |\n| PD | Program Document |\n| TD | Thesis/Dissertation |\n| TR | Technical or Workshop Report |\n| OT | Other |\n",
-            "example" : "TR",
-            "enum" : [ "TR", "JA", "FS", "TD", "P", "PD", "AR", "CO", "B", "OT" ]
+            "$ref" : "#/components/schemas/ProductType"
           },
           "product_type_other" : {
             "type" : "string",
@@ -2537,10 +2545,6 @@
             "description" : "Name of the organization",
             "example" : "Quantum Physics of America, Inc."
           },
-          "organization_id" : {
-            "type" : "integer",
-            "description" : "Unique identifying number of this organization"
-          },
           "contributor_type" : {
             "$ref" : "#/components/schemas/ContributorType"
           },
@@ -2554,9 +2558,15 @@
         },
         "description" : "Describes a particular organization associated with the bibliographic record.  Organizations may be author collaborations, sponsors, research laboratories, or contributors to the work, as indicated by their associated type."
       },
+      "ProductType" : {
+        "type" : "string",
+        "description" : "Define the type of product represented by this metadata information. Values\npresented *in italics* are considered Legacy types, mainly used for historical purposes.\n\nType of \"OT\" requires additional information in the product_type_other field.\n\n| code | description |\n| -- | -- |\n| AR | Accomplishment Report |\n| B | Book |\n| CO | Conference |\n| DA | Dataset |\n| JA | Journal Article |\n| MI | Miscellaneous |\n| OT | Other |\n| P | Patent |\n| PD | Program Document |\n| SM | Software Manual |\n| TD | Thesis/Dissertation |\n| TR | Technical Report |\n| *DC* | *Data Collection* |\n| *DP* | *Data Project* |\n| *ED* | *Engineering Drawing* |\n| *LD* | *Legal Document* |\n| *NS* | *News Story* |\n| *PA* | *Patent Application* |\n| *SP* | *Serial Publication* |\n",
+        "example" : "TR",
+        "enum" : [ "AR", "B", "CO", "DA", "JA", "MI", "OT", "P", "PD", "SM", "TD", "TR", "DC", "DP", "ED", "LD", "NS", "PA", "SP" ]
+      },
       "OrganizationType" : {
         "type" : "string",
-        "description" : "Indicates type of organization:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|CONTRIB|Contributing Organizations|\n|INST|Institution for Publication or Presentation|\n|ORIG_RES|Originating Research Organizations|\n|SPONSOR|Sponsoring Organizations|\n",
+        "description" : "Indicates type of organization:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|CONTRIB|Contributing Organizations|\n|INST|Institution for Publication or Presentation (PAMS only)|\n|ORIG_RES|Originating Research Organizations|\n|SPONSOR|Sponsoring Organizations|\n",
         "enum" : [ "AUTHOR", "CONTRIB", "INST", "ORIG_RES", "SPONSOR" ]
       },
       "Person" : {
@@ -2608,27 +2618,13 @@
           "affiliations" : {
             "type" : "array",
             "description" : "List of any affiliations for this person",
+            "example" : [ "ACME Corporation" ],
             "items" : {
-              "$ref" : "#/components/schemas/AffiliationType"
+              "type" : "string"
             }
           }
         },
         "description" : "Information about a particular person involved in the production or maintenance of this record"
-      },
-      "AffiliationType" : {
-        "type" : "object",
-        "properties" : {
-          "name" : {
-            "type" : "string",
-            "description" : "Name of laboratory, university, etc. person is affiliated with",
-            "example" : "ACME Laboratories, LLC"
-          },
-          "organization_id" : {
-            "type" : "integer",
-            "description" : "ID reference used for OSTI identification of affiliation"
-          }
-        },
-        "description" : "Information about affiliations for a person."
       },
       "PersonType" : {
         "type" : "string",
