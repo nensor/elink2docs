@@ -2672,12 +2672,6 @@
             "description" : "Value of this identifier",
             "example" : "9234782"
           },
-          "uri" : {
-            "type" : "string",
-            "description" : "link to further information about award if applicable (DOI or URL)",
-            "format" : "uri",
-            "example" : "https://doi.org/10.15582/exjiw234"
-          },
           "title" : {
             "type" : "string",
             "description" : "Optional title or description for this identifier or award",
