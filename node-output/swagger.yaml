@@ -25,7 +25,7 @@
     "description" : "Interact with current revisions of OSTI products through querying, submitting, or updating metadata and / or media records for maintaining OSTI products."
   }, {
     "name" : "history",
-    "description" : "Query historical revisions of OSTI metadata products."
+    "description" : "Query historical revisions of individual OSTI metadata products."
   }, {
     "name" : "record media",
     "description" : "Interact with media files associated with OSTI metadata products."
@@ -754,7 +754,7 @@
       "put" : {
         "tags" : [ "records" ],
         "summary" : "Update existing record information.",
-        "description" : "Update existing records at OSTI by unique OSTI ID.  Users may specify only those elements they intend to change to perform updates if desired.  Successful updates will result in a new revision of the existing metadata",
+        "description" : "Update existing records at OSTI by unique OSTI ID.  Successful modifications will result in a new revision of the",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
