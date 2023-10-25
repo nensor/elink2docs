@@ -1345,6 +1345,16 @@
         "responses" : {
           "200" : {
             "description" : "JSON containing the requested revision active at that point in time for the OSTI ID",
+            "headers" : {
+              "Link" : {
+                "description" : "Defines links to first, last, next, and previous revision numbers for this OSTI ID.  Values for \"next\" and \"prev\" will not exist if at the last or first revision respectively.",
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1451,6 +1461,16 @@
         "responses" : {
           "200" : {
             "description" : "JSON containing the requested revision active at that point in time for the OSTI ID, if available.",
+            "headers" : {
+              "Link" : {
+                "description" : "Defines links to first, last, next, and previous revision numbers for this OSTI ID.  Values for \"next\" and \"prev\" will not exist if at the last or first revision respectively.",
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string"
+                }
+              }
+            },
             "content" : {
               "application/json" : {
                 "schema" : {
