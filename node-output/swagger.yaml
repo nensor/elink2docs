@@ -633,12 +633,12 @@
                   "persons" : [ {
                     "first_name" : "Arthur",
                     "last_name" : "Mann",
-                    "person_type" : "AUTHOR"
+                    "type" : "AUTHOR"
                   }, {
                     "first_name" : "Joe",
                     "middle_name" : "Q.",
                     "last_name" : "Public",
-                    "person_type" : "CONTRIB",
+                    "type" : "CONTRIB",
                     "contributor_type" : "Editor"
                   }, {
                     "first_name" : "A.",
@@ -2347,9 +2347,9 @@
             "description" : "If non-zero, indicates unique MEDIA FILE ID this MEDIA FILE is derived from.",
             "example" : 0
           },
-          "media_status" : {
+          "status" : {
             "type" : "string",
-            "description" : "Indiciates current processing status for this MEDIA FILE.",
+            "description" : "Indiciates current processing status for this MEDIA FILE.  Other values may indicate awaiting additional processing, such as \"OCR\", pending text processing.",
             "example" : "DONE"
           },
           "media_type" : {
@@ -2440,10 +2440,10 @@
             "description" : "Links to Record OSTI_ID value for a Media Set.",
             "example" : 99238
           },
-          "processing_status" : {
+          "status" : {
             "type" : "string",
-            "description" : "Indicates current processing state or level of this set.",
-            "example" : "DONE"
+            "description" : "Indicate the current processing of the media file set.  As background processing proceeds, this value will update to either a complete (\"C\") or failure/error state (\"X\").\n\n| code | description |\n| --- | --- |\n| P | Processing |\n| C | Complete |\n| D | Deleted* |\n| R | Replaced* |\n| X | Failed, unable to complete |\n\n* indicates historical versions of media.\n",
+            "example" : "P"
           },
           "added_by" : {
             "type" : "integer",
