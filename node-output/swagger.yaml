@@ -27,18 +27,19 @@
     "name" : "history",
     "description" : "Query historical revisions of individual OSTI metadata products."
   }, {
-    "name" : "record media",
+    "name" : "media",
     "description" : "Interact with media files associated with OSTI metadata products."
   }, {
-    "name" : "media file",
+    "name" : "files",
     "description" : "Interact directly with individual media files based on unique ID."
   } ],
   "paths" : {
     "/records" : {
       "get" : {
         "tags" : [ "records" ],
-        "summary" : "Search OSTI metadata repository based on request parameters.",
+        "summary" : "Search OSTI metadata repository.",
         "description" : "Allows users to search through available OSTI metadata products based on a variety of query filters described below.  Search fields may be combined to further refine results and narrow the focus of desired records.  \n\nResults found will be returned as arrays of one or more matching metadata records as applicable.  Additionally, the response will contain useful headers detailed below.\n\n| header field | description |\n| --- | --- |\n| x-total-count | Contains total number of records matching the criteria indicated |\n| link | HTTP links to first, last, next, and previous sets of results if applicable |\n",
+        "operationId" : "getRecords",
         "parameters" : [ {
           "name" : "all",
           "in" : "query",
@@ -444,9 +445,9 @@
     "/records/{id}" : {
       "get" : {
         "tags" : [ "records" ],
-        "summary" : "Retrieve metadata information for a particular record by OSTI ID.",
+        "summary" : "Fetch single record.",
         "description" : "Obtain the metadata JSON for a record at OSTI.",
-        "operationId" : "",
+        "operationId" : "getRecord",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -541,6 +542,7 @@
         "tags" : [ "records" ],
         "summary" : "Submit new metadata to OSTI.",
         "description" : "Create a new metadata record or report with OSTI.",
+        "operationId" : "submitRecord",
         "parameters" : [ {
           "name" : "state",
           "in" : "path",
@@ -582,7 +584,7 @@
                   "first_name" : "Joe",
                   "middle_name" : "Q.",
                   "last_name" : "Public",
-                  "type" : "CONTRIB",
+                  "type" : "CONTRIBUTING",
                   "contributor_type" : "Editor"
                 }, {
                   "first_name" : "A.",
@@ -591,7 +593,7 @@
                   "affiliations" : [ "Big Research Facilities, LLC" ]
                 } ],
                 "organizations" : [ {
-                  "type" : "ORIG_RES",
+                  "type" : "RESEARCHING",
                   "name" : "Oak Ridge National Laboratory"
                 }, {
                   "type" : "SPONSOR",
@@ -617,7 +619,7 @@
                   "workflow_status" : "SO",
                   "site_ownership_code" : "LLNL",
                   "product_type" : "TR",
-                  "access_limitation" : [ "UNL" ],
+                  "access_limitations" : [ "UNL" ],
                   "publication_date" : "2019-02-18",
                   "released_to_osti_date" : "2023-10-01",
                   "date_added" : "2023-10-10T18:56:18.234+00:00",
@@ -638,7 +640,7 @@
                     "first_name" : "Joe",
                     "middle_name" : "Q.",
                     "last_name" : "Public",
-                    "type" : "CONTRIB",
+                    "type" : "CONTRIBUTING",
                     "contributor_type" : "Editor"
                   }, {
                     "first_name" : "A.",
@@ -647,7 +649,7 @@
                     "affiliations" : [ "Big Research Facilities, LLC" ]
                   } ],
                   "organizations" : [ {
-                    "type" : "ORIG_RES",
+                    "type" : "RESEARCHING",
                     "name" : "Oak Ridge National Laboratory"
                   }, {
                     "type" : "SPONSOR",
@@ -755,6 +757,7 @@
         "tags" : [ "records" ],
         "summary" : "Update existing record information.",
         "description" : "Update existing records at OSTI by unique OSTI ID.  Successful modifications will result in a new revision of the",
+        "operationId" : "updateRecord",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -892,8 +895,10 @@
     "/media/{id}" : {
       "summary" : "Interact with media associated with this OSTI ID, if any.",
       "get" : {
-        "tags" : [ "record media" ],
-        "description" : "Information about any currently associated media (files or URLs) associated with the OSTI ID.  This will include current processing state as well as any associated derived files from the original attached media (text extracted, etc.)",
+        "tags" : [ "media" ],
+        "summary" : "Get media set information",
+        "description" : "Information about any currently associated media sets (files or URLs) associated with the OSTI ID.  This will include current processing state as well as any associated derived files from the original attached media (text extracted, etc.)",
+        "operationId" : "getMediaAssociationsFor",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -986,8 +991,10 @@
         }
       },
       "post" : {
-        "tags" : [ "record media" ],
-        "description" : "Associate new media with a given OSTI ID.",
+        "tags" : [ "media" ],
+        "summary" : "Add media URL or file",
+        "description" : "Associate a new media set, either a URL (using query parameter with NO content body) or a media file upload (via multipart posting). Additional media files will be derived, such as cached copies, extracted text, etc. during media processing. Optionally, a media set title may be specified as a query parameter.",
+        "operationId" : "newMedia",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -999,49 +1006,45 @@
             "type" : "integer",
             "example" : 89934
           }
+        }, {
+          "name" : "title",
+          "in" : "query",
+          "description" : "Optional title for media set",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Link to additional information"
+        }, {
+          "name" : "url",
+          "in" : "query",
+          "description" : "If not posting a file, specify a URL to use for the media.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "https://library.datasets.org/product/media/89934"
+          }
         } ],
         "requestBody" : {
           "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/media_id_body"
-              }
-            },
+            "application/json" : { },
             "multipart/form-data" : {
               "schema" : {
-                "$ref" : "#/components/schemas/media_id_body_1"
+                "$ref" : "#/components/schemas/media_id_body"
               }
             }
           }
         },
         "responses" : {
-          "200" : {
-            "description" : "The operation was successful, new MEDIA SET was created.",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/MediaSet"
-                },
-                "example" : {
-                  "media_id" : 88345,
-                  "media_version" : 1,
-                  "files" : [ {
-                    "media_file_id" : 73485,
-                    "media_id" : 99345,
-                    "media_type" : "O",
-                    "url" : "newreport.pdf",
-                    "mime_type" : "application/pdf",
-                    "file_size_bytes" : 793453,
-                    "url_type" : "L",
-                    "media_status" : "NEW",
-                    "parent_file_id" : 0
-                  } ]
-                }
-              }
-            }
+          "201" : {
+            "description" : "The operation was successful, new MEDIA SET was created."
           },
           "400" : {
-            "description" : "Bad request, media already exists.  Also indicated if file or URL content is a duplicate of already associated media for this record.",
+            "description" : "Bad request, missing required URL or file value, or OSTI ID is invalid.",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1050,11 +1053,125 @@
                 "example" : {
                   "errors" : [ {
                     "status" : 400,
-                    "detail" : "Media already exists, use PUT to replace."
+                    "detail" : "Invalid ID value."
                   } ]
                 }
               }
             }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "Conflict, URL or file is already associated with this record.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 409,
+                    "detail" : "File is already associated with this record."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "media" ],
+        "summary" : "Remove all media sets",
+        "description" : "Disassociate ALL media sets from this OSTI ID.",
+        "operationId" : "deleteMedia",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "The OSTI ID of the record to remove media",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 77564
+          }
+        }, {
+          "name" : "reason",
+          "in" : "query",
+          "description" : "Reason for deletion of media for reporting purposes.",
+          "required" : true,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "Wrong PDF was attached to this report."
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "The operation was successful.  No media sets will remain associated with this OSTI ID."
           },
           "401" : {
             "description" : "Authentication required.",
@@ -1121,10 +1238,178 @@
             }
           }
         }
+      }
+    },
+    "/media/{id}/{media-id}" : {
+      "summary" : "Single media set interaction",
+      "description" : "Replace or remove individual media sets associated with a given OSTI ID record.",
+      "put" : {
+        "tags" : [ "media" ],
+        "summary" : "Replace a media set",
+        "description" : "Replace a given media set with a new basis; either a URL (in JSON) or a new media file (via multipart upload).  This new file or URL will provide the basis for a new media set revision, replacing the previous iteration.",
+        "operationId" : "replaceMedia",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "OSTI ID of record associated with media set",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          },
+          "example" : 2300003
+        }, {
+          "name" : "media-id",
+          "in" : "path",
+          "description" : "ID of media set to replace",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          },
+          "example" : 88345
+        }, {
+          "name" : "title",
+          "in" : "query",
+          "description" : "Optional title for this media set",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "Poster with conference details"
+        }, {
+          "name" : "url",
+          "in" : "query",
+          "description" : "If not uploading a file, specify a URL to replace this media set.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          },
+          "example" : "https://archive.org/files/content/228923"
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : { },
+            "multipart/form-data" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/id_mediaid_body"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "The operation was successful, new MEDIA SET revision was created."
+          },
+          "400" : {
+            "description" : "Bad request, missing required file or URL, or OSTI ID/MEDIA ID are invalid values.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 400,
+                    "detail" : "Invalid ID value."
+                  } ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Authentication required.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 401,
+                    "detail" : "No user credentials supplied."
+                  } ]
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access to indicated record is forbidden.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 403,
+                    "detail" : "Access is denied."
+                  } ]
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Record is not on file.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 404,
+                    "detail" : "Record is not on file."
+                  } ]
+                }
+              }
+            }
+          },
+          "409" : {
+            "description" : "URL or file is already associate with this record.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 409,
+                    "detail" : "This URL is already associated with this record."
+                  } ]
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "A server error occurred during the request.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorSet"
+                },
+                "example" : {
+                  "errors" : [ {
+                    "status" : 500,
+                    "detail" : "Internal server error."
+                  } ]
+                }
+              }
+            }
+          }
+        }
       },
       "delete" : {
-        "tags" : [ "record media" ],
-        "description" : "Disassociate current media set from this record.",
+        "tags" : [ "media" ],
+        "summary" : "Remove a single media set",
+        "description" : "Disassociate an individual media set from this OSTI ID.",
+        "operationId" : "deleteMediaSet",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -1137,6 +1422,17 @@
             "example" : 77564
           }
         }, {
+          "name" : "media-id",
+          "in" : "path",
+          "description" : "Media ID for the set to remove.",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "example" : 793432
+          }
+        }, {
           "name" : "reason",
           "in" : "query",
           "description" : "Reason for deletion of media for reporting purposes.",
@@ -1145,7 +1441,7 @@
           "explode" : true,
           "schema" : {
             "type" : "string",
-            "example" : "Wrong PDF was attached to this report."
+            "example" : "Extra file associated with this report."
           }
         } ],
         "responses" : {
@@ -1222,8 +1518,10 @@
     "/media/file/{id}" : {
       "summary" : "Interact with particular MEDIA FILES based on unique MEDIA FILE ID.",
       "get" : {
-        "tags" : [ "media file" ],
+        "tags" : [ "files" ],
+        "summary" : "Get media file content",
         "description" : "Obtain content stream of a particular MEDIA FILE by its unique ID.",
+        "operationId" : "getMediaFile",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -1318,7 +1616,9 @@
     "/records/revision/{id}/at/{number}" : {
       "get" : {
         "tags" : [ "history" ],
+        "summary" : "Access revisions of metadata",
         "description" : "Access specific revision number of a given OSTI ID if available.",
+        "operationId" : "getAllVersions",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -1433,7 +1733,9 @@
     "/records/revision/{id}/dated/{date}" : {
       "get" : {
         "tags" : [ "history" ],
+        "summary" : "Access revision by date",
         "description" : "Access revision of metadata by OSTI ID that was active at the given date-time provided.",
+        "operationId" : "getVersionAtTime",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -1448,7 +1750,7 @@
         }, {
           "name" : "date",
           "in" : "path",
-          "description" : "Timestamp representing the date and time when revision was active. Accepts simple dates (yyyy-MM-dd) or various date-time formats.  If only date is provided, the revision will be assumed as start-of-day for that date.",
+          "description" : "Timestamp representing the date and time when revision was active. Accepts simple dates (YYYY-MM-DD) or various date-time formats.  If only date is provided, the revision will be assumed as start-of-day for that date.",
           "required" : true,
           "style" : "simple",
           "explode" : false,
@@ -1549,7 +1851,9 @@
     "/records/revision/{id}" : {
       "get" : {
         "tags" : [ "history" ],
+        "summary" : "Summary of all revisions",
         "description" : "Obtain summary information of all given revisions of a metadata record by its OSTI ID.",
+        "operationId" : "getVersions",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -1719,7 +2023,7 @@
           },
           "conference_type" : {
             "type" : "string",
-            "description" : "Code representing the type of conference-related work of this record. Generally only applicable to CO type submissions.\n\n| code | description |\n| -- | -- |\n| C | Paper/Proceeding (Legacy Code) |\n| P | Proceedings |\n| A | Paper |\n| R | Presentation |\n| O | Poster |\n",
+            "description" : "Code representing the type of conference-related work of this record. Generally, only applicable to CO type submissions.\n\n| code | description |\n| -- | -- |\n| C | Paper/Proceeding (Legacy Code) |\n| P | Proceedings |\n| A | Paper |\n| R | Presentation |\n| O | Poster |\n",
             "example" : "O"
           },
           "contract_award_date" : {
@@ -1734,7 +2038,7 @@
           },
           "date_added" : {
             "type" : "string",
-            "description" : "Date record first entered the OSTI system. Value internally maintaned by ELINK.",
+            "description" : "Date record first entered the OSTI system. Value internally maintained by ELINK.",
             "format" : "date-time",
             "example" : "2023-09-22T18:31:32.043Z"
           },
@@ -1744,13 +2048,13 @@
             "format" : "date-time",
             "example" : "2020-04-02T12:33:17.553Z"
           },
-          "date_submitted_first" : {
+          "date_submitted_to_osti_first" : {
             "type" : "string",
             "description" : "Date record was first submitted to OSTI for publication. Maintained internally by ELINK.",
             "format" : "date-time",
             "example" : "2019-04-04T08:25:12.234Z"
           },
-          "date_submitted_last" : {
+          "date_submitted_to_osti_last" : {
             "type" : "string",
             "description" : "Most recent date record information was submitted to OSTI.  Maintained internally by ELINK.",
             "format" : "date-time",
@@ -1824,6 +2128,13 @@
             "type" : "string",
             "description" : "Indicates date on which the document embargo ends, if applicable.",
             "example" : "7/6/2022"
+          },
+          "identifiers" : {
+            "type" : "array",
+            "description" : "List of identifying numbers related to this record",
+            "items" : {
+              "$ref" : "#/components/schemas/Identifier"
+            }
           },
           "issue" : {
             "type" : "string",
@@ -1900,6 +2211,13 @@
           "opn_fieldoffice_acronym_code" : {
             "type" : "string"
           },
+          "organizations" : {
+            "type" : "array",
+            "description" : "List of organizations related to this record",
+            "items" : {
+              "$ref" : "#/components/schemas/Organization"
+            }
+          },
           "other_information" : {
             "type" : "array",
             "description" : "Information useful to include in published announcements which is not suited for other fields.",
@@ -1973,6 +2291,13 @@
           "pending_enhancement" : {
             "type" : "boolean"
           },
+          "persons" : {
+            "type" : "array",
+            "description" : "List of persons (authors, contributors, etc.) related to this record",
+            "items" : {
+              "$ref" : "#/components/schemas/Person"
+            }
+          },
           "prevent_transfer" : {
             "type" : "boolean",
             "description" : "Internal state to determine if this record should be transferred or not.",
@@ -2024,6 +2349,13 @@
             "type" : "string",
             "description" : "Additional information regarding the document."
           },
+          "related_identifiers" : {
+            "type" : "array",
+            "description" : "List of related identifiers connected to this record",
+            "items" : {
+              "$ref" : "#/components/schemas/RelatedIdentifier"
+            }
+          },
           "released_to_osti_date" : {
             "type" : "string",
             "description" : "Date record information was released to OSTI, as entered by releasing official.",
@@ -2062,7 +2394,7 @@
           },
           "sbiz_phase" : {
             "type" : "string",
-            "description" : "A three character field constrained to \"I\", \"II\", \"IIA\", \"IIB\", or \"III\" indicating the phase of this SBIR/STTR report."
+            "description" : "A three-character field constrained to \"I\", \"II\", \"IIA\", \"IIB\", or \"III\" indicating the phase of this SBIR/STTR report."
           },
           "sbiz_previous_contract_number" : {
             "type" : "string",
@@ -2104,34 +2436,6 @@
             "description" : "Title of record.  For Book Chapters, the title of the chapter.",
             "example" : "Sample document title"
           },
-          "identifiers" : {
-            "type" : "array",
-            "description" : "List of identifying numbers related to this record",
-            "items" : {
-              "$ref" : "#/components/schemas/Identifier"
-            }
-          },
-          "organizations" : {
-            "type" : "array",
-            "description" : "List of organizations related to this record",
-            "items" : {
-              "$ref" : "#/components/schemas/Organization"
-            }
-          },
-          "persons" : {
-            "type" : "array",
-            "description" : "List of persons (authors, contributors, etc.) related to this record",
-            "items" : {
-              "$ref" : "#/components/schemas/Person"
-            }
-          },
-          "related_identifiers" : {
-            "type" : "array",
-            "description" : "List of related identifiers connected to this record",
-            "items" : {
-              "$ref" : "#/components/schemas/RelatedIdentifier"
-            }
-          },
           "doi_status" : {
             "type" : "string",
             "description" : "Registration response status for record, if applicable, of latest \nreleased version of the record.\n| value | description |\n| --- | --- |\n| OK | This submission completed with registrar successfully |\n| PENDING | DOI has not yet been submitted to authority |\n| SENT | DOI information has been transmitted but not confirmed |\n| FAIL | Latest submission did not complete |\n",
@@ -2139,19 +2443,13 @@
           },
           "registration_authority" : {
             "type" : "string",
-            "description" : "DOI registrar authority, if any, for this record's DOI value.\n| value | description |\n| --- | --- |\n| CROSSREF | Crossref DOI registration |\n| DATACITE | Datacite DOI registration |\n",
+            "description" : "DOI registrar authority, if any, for this record's DOI value.\n| value | description |\n| --- | --- |\n| CROSSREF | Crossref DOI registration |\n| DATACITE | DataCite DOI registration |\n",
             "example" : "DATACITE"
           },
           "doi_source" : {
             "type" : "string",
             "description" : "Origination of DOI on this record, if applicable.\n| value | description |\n| --- | --- |\n| OSTI | DOI value issued by and maintained by OSTI |\n| METADATA | DOI value supplied by submitter |\n| QUERY | DOI value was found to be assigned elsewhere for this record |\n",
             "example" : "OSTI"
-          },
-          "url" : {
-            "type" : "string",
-            "description" : "Optionally, a link to product, landing page, or technical report described by this record.  If the product or report is to be hosted by OSTI, the media itself should be uploaded through the API media interfaces once the metadata information has been entered and the OSTI ID obtained.",
-            "format" : "uri",
-            "example" : "https://sample.org/reports/2023/final_report.pdf"
           }
         },
         "description" : "Defines the bibliographic metadata about a particular work or record.  Depending on product type, various elements are permitted, not permitted, or required."
@@ -2188,8 +2486,8 @@
       },
       "OrganizationType" : {
         "type" : "string",
-        "description" : "Indicates type of organization:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|CONTRIB|Contributing Organizations|\n|INST|Institution for Publication or Presentation (PAMS only)|\n|ORIG_RES|Originating Research Organizations|\n|SPONSOR|Sponsoring Organizations|\n",
-        "enum" : [ "AUTHOR", "CONTRIB", "INST", "ORIG_RES", "SPONSOR" ]
+        "description" : "Indicates type of organization:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|CONTRIBUTING|Contributing Organizations|\n|PAMS_TD_INST|Institution for Publication or Presentation (PAMS only)|\n|RESEARCHING|Originating Research Organizations|\n|SPONSOR|Sponsoring Organizations|\n",
+        "enum" : [ "AUTHOR", "CONTRIBUTING", "PAMS_TD_INST", "RESEARCHING", "SPONSOR" ]
       },
       "Person" : {
         "type" : "object",
@@ -2250,8 +2548,8 @@
       },
       "PersonType" : {
         "type" : "string",
-        "description" : "Indicates type of person:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|CONTACT|Contact Information|\n|CONTRIB|Contributor|\n|PROT_CE|Protected Data Courtesy Email Information|\n|PROT_RO|Actual Releasing Official Name|\n|RELEASE|Releasing Official|\n|SBIZ_BO|SBIR/STTR Business Official|\n|SBIZ_PI|SBIR/STTR Principal Investigator|\n",
-        "enum" : [ "AUTHOR", "RELEASE", "CONTACT", "CONTRIB", "PROT_CE", "PROT_RO", "SBIZ_PI", "SBIZ_BO" ]
+        "description" : "Indicates type of person:\n| code | description |\n| -- | -- |\n|AUTHOR|Authors|\n|CONTACT|Contact Information|\n|CONTRIBUTING|Contributor|\n|PROT_CE|Protected Data Courtesy Email Information|\n|PROT_RO|Actual Releasing Official Name|\n|RELEASE|Releasing Official|\n|SBIZ_BO|SBIR/STTR Business Official|\n|SBIZ_PI|SBIR/STTR Principal Investigator|\n",
+        "enum" : [ "AUTHOR", "RELEASE", "CONTACT", "CONTRIBUTING", "PROT_CE", "PROT_RO", "SBIZ_PI", "SBIZ_BO" ]
       },
       "ContributorType" : {
         "type" : "string",
@@ -2341,6 +2639,11 @@
             "type" : "integer",
             "description" : "Link to parent MEDIA SET ID.",
             "example" : 233743
+          },
+          "revision" : {
+            "type" : "integer",
+            "description" : "Revision number of this media file, associated with the MEDIA SET",
+            "example" : 1
           },
           "parent_media_file_id" : {
             "type" : "integer",
@@ -2449,6 +2752,20 @@
             "type" : "integer",
             "description" : "Indicates user ID that added this media set.",
             "example" : 34582
+          },
+          "document_page_count" : {
+            "type" : "integer",
+            "description" : "Number of pages, if applicable, found in the processing of this file.",
+            "example" : 23
+          },
+          "mime_type" : {
+            "type" : "string",
+            "description" : "MIME type description of the file content of this media file.",
+            "example" : "application/pdf"
+          },
+          "media_title" : {
+            "type" : "string",
+            "example" : "PDF of technical report content"
           },
           "media_location" : {
             "type" : "string",
@@ -2578,14 +2895,14 @@
       "media_id_body" : {
         "type" : "object",
         "properties" : {
-          "url" : {
+          "file" : {
             "type" : "string",
-            "description" : "The URL link to the media or landing page describing the media related to this product.",
-            "example" : "https://library.datasets.org/product/media/89934"
+            "description" : "File content to associate with the metadata.",
+            "format" : "binary"
           }
         }
       },
-      "media_id_body_1" : {
+      "id_mediaid_body" : {
         "type" : "object",
         "properties" : {
           "file" : {
